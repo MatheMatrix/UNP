@@ -9,4 +9,5 @@
    * [L2 Population](src/arcchitecture/l2pop.md)
    * [VxLan](src/arcchitecture/vxlan.md)
    * [Vlan](src/arcchitecture/vlan.md)
-
+ * [功能](/src/funcs/preface.md)
+   * 
