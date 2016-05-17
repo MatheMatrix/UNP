@@ -38,16 +38,55 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
  
  具有 FloatingIP 的虚拟机南北流量同样无需网络节点，可以直接从计算节点通到外网。
  
-#### DVR 的限制
+### DVR 的限制
 
 工程领域是没有银弹的，所以 DVR 目前确实存在一些问题：
  - 对于 VxLan 拓扑需要开启 L2 Population 从而强制影响了数据平面，具体见 [VxLan](./vxlan.md) 上的描述；
  - 对消息队列的使用加重，增加了大量对 l3_agent 相关 topic 的消费
  - 存在与计算节点争抢资源的问题
- - 在 OpenStack Liberty 的实现上无法做到 DVR 与 L3 HA 共存，即实现 snat 的 snat_router 无法实现基于 VRRP 的原生高可用，对 L3 HA 的更多介绍参考 [L3 HA](./l3_ha.md)
- - snat router 无法很灵活的迁移到一般的计算节点上。因为其 l3 agent 类型是不一样的。
+ - 在 OpenStack Liberty 的实现上无法做到 DVR 与 L3 HA 共存，即实现 SNAT 的 snat_router 无法实现基于 VRRP 的原生高可用，对 L3 HA 的更多介绍参考 [L3 HA](./l3_ha.md)
+ - SNAT router 无法很灵活的迁移到一般的计算节点上。因为其 l3 agent 类型是不一样的。
 
-目前来看，我们的应对方案主要是同时提供 L3 HA 的虚拟路由器保证特殊业务可以正确运行
+目前来看，我们的应对方案主要是以下几点：
+ - 同时提供 L3 HA 的虚拟路由器保证特殊业务可以正确运行
+ - 提高消息队列的性能和做大量的保证测试（参考 [系统－消息队列](../system/mq.md)）
+ - 通过 cgroup 将计算节点上的重要业务（如 ceph）与其相隔离，将网卡中断绑定到与 qemu 所运行的 CPU 相同位置上
+ - 基于 Pacemaker 实现对 snat 路由器的故障感知和自动迁移，详见下面的 pacemaker 相关内容
+
+ SNAT 的灵活迁移目前没有很好的解决方案，可能需要大版本的升级。
+ 
+### 稳定性验证
+ 
+我们针对 DVR 环境进行了严格稳定性测试，具体包括控制平面性能并发验证，测试了不同次数和并发下的创建删除虚拟路由器、浮动 IP、创建更新虚拟路由器等。这里节选了创建、删除浮动 IP 的测试数据，完整的测试数据、测试方法和测试指标说明参考 UnitedStack 知识库相关文章或本文档其他章节 [性能](../performance/preface.md)。
+ 
+ ![rally-1][5]
+ 
+ 此外为了达到模拟实际生产的效果，我们还做了压力测试，测试计算节点在很高的负载（比如大量 CPU 核心处于 xx 的状态）时的效果。
+
+  
+### 性能测试
+ 
+ 得益于架构的提升，DVR 环境下的性能同样有所改善，blah blah，完整的测试数据、测试方法和测试指标说明参考 UnitedStack 知识库相关文章或本文档其他章节 [性能](../performance/preface.md)。
+ 
+ 一个图
+ 
+此外，如果用户希望能获得更高的性能，也可以通过本文档的专业性能章节 [性能](../performance/preface.md) 获取更完整的性能优化建议。
+
+### 其他
+
+#### 部署方式
+
+核心配置是起相应 agent 和确保 Underlay 网络符合预期，具体可以查阅本文档的 [部署](../deployment) 了解具体细节。这里只简单描述一下服务部署模型：
+
+![deploy_dvr][6]
+
+#### FAQ
+
+ - Q：DVR 和 HA 路由器之间能否相互转换？
+   A：不能。
+ - Q：如果计算节点宕机了怎么办，是否需要额外操作？
+   A：不需要，只要虚拟机执行了迁移操作，会自动反映到 Neutron 从而保证网络正常。
+
 
 
  
@@ -57,3 +96,5 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
  [2]: ../../images/architecture/scenario-classic-ovs-flowns2.png
  [3]: ../../images/architecture/scenario-dvr-flowew1.png
  [4]: ../../images/architecture/scenario-dvr-flowns2.png
+ [5]: ../../images/architecture/2016-05-18_00-56-11.png
+ [6]: ../../images/architecture/scenario-dvr-services.png
