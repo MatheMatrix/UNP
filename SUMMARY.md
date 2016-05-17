@@ -1,6 +1,5 @@
 # Summary
 
-* Introduction
 * [前言](README.md)
 * [文档历史](src/revision.md)
 * [架构](src/architecture/preface.md)
