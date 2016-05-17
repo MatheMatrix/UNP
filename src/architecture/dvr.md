@@ -14,6 +14,10 @@
 
  传统的 Open vSwitch Driver 实现的网关是集中式的，也就是说虚拟机的跨子网东西流量和外网的南北向流量都是回过网络节点这个中央节点的，参考下面两幅图分别说明了东西流量和南北流量：
  
+ ![ew][1]
  
  
  
+ 
+ [1]: ../../images/architecture/scenario-classic-ovs-flowew1.png
+ [2]: ../../images/architecture/scenario-classic-ovs-flowns2.png
