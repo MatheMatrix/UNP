@@ -21,10 +21,10 @@ UnitedStack® UNP Perlis 的基础组成包含以下方面：
  - 第三方高级网络服务集成
   - 山石云∙界
  - 生态建设
-  - Cisco<sup>®<sup>
-  - Hillstone<sup>®<sup>
-  - Big Switch Networks<sup>®<sup>
-  - F5 Networks<sup>®<sup>
+  - Cisco<sup>®</sup>
+  - Hillstone<sup>®</sup>
+  - Big Switch Networks<sup>®</sup>
+  - F5 Networks<sup>®</sup>
  - 其他开源软件
   - HAProxy
   - Openswan
