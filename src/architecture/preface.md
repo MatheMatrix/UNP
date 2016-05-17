@@ -5,7 +5,17 @@
 
 
 
-整体架构是 UnitedStack<sup>®</sup> United Networking Platform(UNP) 的核心，整个 UNP 的架构可以从三方面阐述：
+整体架构是 UnitedStack<sup>®</sup> United Networking Platform(UNP) 的核心，然而通常意义上的架构可能会涉及网络的方方面面：
+ - 接入层高可用
+ - Underlay 网络规划
+ - 服务器角色和数量规划
+ - 高级服务的开启和使用
+ - 第三方集成的使用
+ - ……
+
+然而以上内容会在 [部署](../部署/preface.md)、[高级服务](../advanced_services/preface)、[生态](../3rd_party/preface.md) 等节讨论，本节讨论的核心问题是 O网络架构即
+
+整个 UNP 的架构可以从三方面阐述：
  - 虚拟路由器的分布式与高可用即 DVR 与 L3 HA
  - VxLan 的控制平面和广播抑制即 L2 Population 与 ARP Responder
  - 网络隔离方式 VxLan 与 Vlan
@@ -21,4 +31,4 @@
  - 默认打开 L2 Population + ARP Responder，配合 DVR 使用和提升网络有效连接数；
  - 默认使用 VxLan 租户网络，提升网络扩展性、解决 Vlan 网络 4096 限制。
 
-对应的配置方法参考
+对应的配置方法参考 [部署-配置文件-默认推荐配置](../deploy/config/dvr.md)，具体的架构原理和实现意义参考本节内的文档。
