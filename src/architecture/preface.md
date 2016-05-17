@@ -10,7 +10,7 @@
  - 第三方集成的使用
  - ……
 
-然而以上内容会在 [部署](../部署/preface.md)、[高级服务](../advanced_services/preface)、[生态](../3rd_party/preface.md) 等节讨论，本节讨论的核心问题是 Open vSwitch Driver 实现下的虚拟网络架构。所以以下内容中指代的 UNP 架构均指 Open vSwitch Driver 架构下的虚拟网络架构。
+然而以上内容会在 [部署](../deploy/preface.md)、[高级服务](../advanced_services/preface)、[生态](../3rd_party/preface.md) 等节讨论，本节讨论的核心问题是 Open vSwitch Driver 实现下的虚拟网络架构。所以以下内容中指代的 UNP 架构均指 Open vSwitch Driver 架构下的虚拟网络架构。
 
 UnitedStack<sup>®</sup> UNP 的架构可以从三方面阐述：
  - 虚拟路由器的分布式与高可用即 Distributed Virtual Router（以下简称 DVR）与 Layer 3 High Availability（以下简称 L3 HA）
