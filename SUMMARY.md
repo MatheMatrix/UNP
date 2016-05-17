@@ -1,3 +1,5 @@
-# Table of content
+# Summary
 
-* [Revision](src/revision.md)
+* [Introduction](README.md)
+* [文档历史](src/revision.md)
+
