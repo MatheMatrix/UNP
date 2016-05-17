@@ -54,9 +54,11 @@ UnitedStack<sup>®</sup> UNP 的版本号参考了[语义化版本2.0.0](http://
 
 UnitedStack<sup>®</sup> UNP 的总体目标是打造一个结合 UnitedStack<sup>®</sup> OpenStack 使用的网络平台，会提供一个默认推荐标准架构，但针对用户多样性的需求和网络实现同时会给出建议和专业性的说明，以期能够完整的满足用户。
 
- 根据目前网络发展现状和公司规划，我们设计的路线图是这样的：
+ 根据目前网络发展现状和规划，UnitedStack<sup>®</sup> UNP 的 Release 计划如下
  
 ![plan][2]
+
+对应版本号会在未来补充。
 
 
 ### 文档撰写目的
