@@ -34,6 +34,9 @@ HA router 总体架构如图
 
 ![ha-router-architecture][3]
 
+此外还有没有 开启 contrackd 同步 session，VRRP 主从切换之后丢失一部分现有的会话，但不会影响虚拟机
+跟外部新的会话。对于丢失的那部分会话，虚拟机内部通过重传能够保持。
+
 #### HA Router 创建过程
 ##### server-plugin
 
