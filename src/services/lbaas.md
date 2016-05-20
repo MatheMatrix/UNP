@@ -31,11 +31,11 @@ LBaaS v2 之后重构了数据模型，从以资源池（pool）为中心转变�
 Loadbalancer 需要确保负载能够被正确的分配到一组后端 Server 上，更好的利用系统资源。
 Loadbalancer 接收到的请求会以以下三种方式中的一种进行请求分发：
 
-[1]  Round robin: 以轮询的方式在一组后端 Server 间分发负载
+ * Round robin: 以轮询的方式在一组后端 Server 间分发负载
 
-[2] Source IP: 来自同一个源 IP 的请求总是被分发到同一个后端 Server 
+ * Source IP: 来自同一个源 IP 的请求总是被分发到同一个后端 Server 
 
-[3] Least connections: 将请求分发到当前保持的连接数最少的后端 Server
+ * Least connections: 将请求分发到当前保持的连接数最少的后端 Server
 
 
 ## 服务部署
