@@ -203,8 +203,8 @@ l2population 是通过预先下发 port 可达性的方法来较少隧道网络 
 
 ##### 部署方式及配置
 
-整体 Service Layout 相对于 Classic 没有发生变化，在 neutron.comf 中设置 l3_ha = False；租户需要
-在创建 router 时指定 router 的 HA 属性。
+整体 Service Layout 相对于 Classic 没有发生变化，默认在 neutron.conf 中设置 l3_ha = False，
+以避免和 DVR 冲突，租户可以在创建 router 时指定 router 的 HA 属性。
 
 [1]: ../../images/architecture/scenario-classic-ovs-network2.png
 [2]: ../../images/architecture/scenario-l3ha-ovs-network2.png
