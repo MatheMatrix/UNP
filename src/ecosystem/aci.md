@@ -47,7 +47,7 @@ Neutron 中 ML2 通过 TypeDriver 和 MechanismDriver 来定义和实现网络�
 | Project | Tenant (fvTenant) | The project is directly mapped to a Cisco APIC tenant. |
 | Network | EPG (fvAEPg) Bridge domain (fvBD) | Network creation or deletion triggers both EPG and bridge domain configurations. The Cisco ACI fabric acts as a distributed Layer 2 fabric, allowing networks to be present anywhere. |
 | Subnet | Subnet (fvSubnet) |The subnet is a 1:1 mapping. ｜
-｜ Security Group and Rule ｜ ｜Security groups are fully supported as part of the solution. However, these resources are not mapped to Cisco APIC, but are instead enforced through IP tables as they are in traditional OpenStack deployments. |
+| Security Group and Rule |  |Security groups are fully supported as part of the solution. However, these resources are not mapped to Cisco APIC, but are instead enforced through IP tables as they are in traditional OpenStack deployments. |
 | Router | Contract (vzBrCP) Subject (vzSubj) Filter (vzFilter) | Contracts are used to connect EPGs and define routed relationships. The Cisco ACI fabric also acts as a default gateway. The Layer 3 agent is not used. |
 | Network: external | Outside | An outside EPG, including the router configuration, is used. |
 | Port | Static path binding (fvRsPathAtt) | When a virtual machine is attached, a static EPG mapping is used to connect a specific port and VLAN combination on the top of the rack (ToR). |
@@ -78,13 +78,14 @@ GBP 以 service plugin的方式运行在 neutron-server的进程空间，未来�
 | Layer 2 policy | Bridge domain (fvBD) | A set of groups within the same switching domain. Layer 2 policies can contain one or more subnets. |
 | Layer 3 policy | Context (fvCtx) | Private network containing a potentially overlapping set of IP addresses. Layer 3 policies in GBP contain IP supernets that are divided into subnets. |
 
+
 ACI 提供了一个Driver 作为 GBP 的 Nativa Driver 将 GBP 的资源转换成 ACI 的 Policy
 数据模型，接受到的的请求转发到 APIC 上。
 
 ### ML2 与 GBP Native 对比
 
 |   | GBP | ML2 |
-|:- |:--- |:--- |
+|:-- |:--- |:--- |
 | Model | Multiple EPG per BD | Limited to 1:1 EPG to BD |
 | Security view in APIC | All contract rules pushed from OpenStack to APIC | Security groups pushed straight to host (ie. Not visible in APIC) |
 | Network API* | ML2 model not available. This may impact higher level tools that require network/router model such as Cloud Foundry | GBP model not available |
