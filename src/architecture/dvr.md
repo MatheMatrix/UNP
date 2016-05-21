@@ -44,14 +44,16 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
  - 对于 VxLan 拓扑需要开启 L2 Population 从而强制影响了数据平面，具体见 [VxLan](./vxlan.md) 上的描述；
  - 对消息队列的使用加重，增加了大量对 l3_agent 相关 topic 的消费
  - 存在与计算节点争抢资源的问题
- - 在 OpenStack Liberty 的实现上无法做到 DVR 与 L3 HA 共存，即实现 SNAT 的 snat_router 无法实现基于 VRRP 的原生高可用，对 L3 HA 的更多介绍参考 [L3 HA](./l3_ha.md)
- - SNAT router 无法很灵活的迁移到一般的计算节点上。因为其 l3 agent 类型是不一样的。
+ - 在 OpenStack Liberty 的实现上无法做到 DVR 与 L3 HA 共存，即实现 SNAT 的 snat_router 无法实现基于 VRRP 的原生高可用，对 L3 HA 的更多介绍参考 [L3 HA](./l3_ha.md)，关于 Bug 的详细描述见 [neutron-1365473](https://bugs.launchpad.net/neutron/+bug/1365473)
+ - SNAT router 无法很灵活的迁移到一般的计算节点上。因为其 l3 agent 类型是不一样的
+ - 目前 DVR 场景无法使用 VIP 类应用，也就是说，如果需要使用 keepalived、虚拟路由器等应用（参考[生态-Hillstone-云界]）时，是不能创建 DVR 虚拟路由器的。原因是当创建虚拟网卡并绑定浮动 IP 时，Neutron 无法确定如何绑定浮动 IP。
 
 目前来看，我们的应对方案主要是以下几点：
  - 同时提供 L3 HA 的虚拟路由器保证特殊业务可以正确运行
  - 提高消息队列的性能和做大量的保证测试（参考 [系统－消息队列](../system/mq.md)）
  - 通过 cgroup 将计算节点上的重要业务（如 ceph）与其相隔离，将网卡中断绑定到与 qemu 所运行的 CPU 相同位置上
- - 基于 Pacemaker 实现对 snat 路由器的故障感知和自动迁移，详见下面的 pacemaker 相关内容
+ - 基于 Pacemaker 实现对 snat 路由器的故障感知和自动迁移，详见下面的 Pacemaker 相关内容
+ - 提供创建 HA 虚拟路由器的选项，用户可以自主选择虚拟路由器规格。
 
  SNAT 的灵活迁移目前没有很好的解决方案，可能需要大版本的升级。
  
@@ -61,20 +63,35 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
  
  ![rally-1][5]
  
- 此外为了达到模拟实际生产的效果，我们还做了压力测试，测试计算节点在很高的负载（比如大量 CPU 核心处于 xx 的状态）时的效果。
+ 此外为了达到模拟实际生产的效果，我们还做了压力测试，测试计算节点在很高的负载（比如整体 CPU 负载处在 50%、80%、100% 的状态）时的效果。详见 [稳定性]。
 
   
 ### 性能测试
  
- 得益于架构的提升，DVR 环境下的性能同样有所改善，blah blah，完整的测试数据、测试方法和测试指标说明参考 UnitedStack 知识库相关文章或本文档其他章节 [性能](../performance/preface.md)。
+ 得益于架构的提升，DVR 环境下的性能同样有所改善，对于单流环境（单个虚拟机角度）主要提升效果在同主机上，但是由于架构提升，实际上整个系统的完整吞吐可以得到很高的提高，整个系统的路由吞吐不会再限制到某几个网络节点上，而是会分散到所有计算节点，完整的测试数据、测试方法和测试指标说明参考 UnitedStack 知识库相关文章或本文档其他章节 [性能](../performance/preface.md)。这里简单介绍与 Classic 对比的 VxLan 性能数据。
  
- 一个图
+ ![Performance][7]
  
-此外，如果用户希望能获得更高的性能，也可以通过本文档的专业性能章节 [性能](../performance/preface.md) 获取更完整的性能优化建议。
+ 测试项说明如下：
+ 
+ | 编号 | 测试项 | 编号 | 测试项 |
+ |------|--------|------|------|
+ | 1 | 大包同子网跨主机 | 2 | 大包跨子网跨主机 |
+ | 3 | 大包挎网络同主机 | 4 | 大包同子网同主机 |
+ | 5 | 小包同子网跨主机 | 6 | 小包跨子网跨主机 |
+ | 7 | 小包同子网同主机 | 8 | 小包跨子网同主机 |
+ | 9 | 大包浮动 IP 跨主机 | 10 | 大包浮动 IP 同主机 |
+ | 11 | 小包浮动 IP 同主机 |
+ 
+此外，如果用户希望能获得更高的性能，也可以通过本文档的专业性能章节 [性能](../performance/preface.md) 获取更完整的性能优化建议
 
 ### 基于 Pacemaker 的高可用设计
 
-这里需要介绍基于 Pacemaker 的高可用的大概思路和预期效果。
+ 由于前文所述局限，目前分布式虚拟路由器的 1:N SNAT 模块是单点且无法支持原生基于 VRRP 的高可用，对此我们开发了基于 Pacemaker 的高可用方案：
+ 
+ ![pacemaker][8]
+ 
+ 基本原理是不断检查 L3 Agent（如果部署了 VPN 服务的话也可以是 VPN Agent，下文简称为 L3 Agent）的状态。当探测到 L3 Agent 状态被 Neutron 置为 Down 时，通过 ICMP 检查网络节点状态，如果确定网络节点用户虚拟机业务网络的 VxLan/Vlan 相应网卡上的 IP 不可达时，则将虚拟路由器全部迁出，为了避免出现两个虚拟路由器同时服务，会通过 IPMI 将原节点关闭。
 
 ### 其他
 
@@ -84,16 +101,14 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
 
 ![deploy_dvr][6]
 
+值得注意的我们的 HA 方案对 Underlay 网络的要求，最佳实践是 Pacemaker 需要和管理网、业务网和 IPMI 网均通。
+
 #### FAQ
 
  - Q：DVR 和 HA 路由器之间能否相互转换？
    A：不能。
  - Q：如果计算节点宕机了怎么办，是否需要额外操作？
    A：不需要，只要虚拟机执行了迁移操作，会自动反映到 Neutron 从而保证网络正常。
-
-
-
- 
 
  
  [1]: ../../images/architecture/scenario-classic-ovs-flowew1.png
@@ -102,3 +117,5 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
  [4]: ../../images/architecture/scenario-dvr-flowns2.png
  [5]: ../../images/architecture/2016-05-18_00-56-11.png
  [6]: ../../images/architecture/scenario-dvr-services.png
+ [7]: ../../images/architecture/DVR_CLA_Performance.png
+ [8]: ../../images/architecture/ha_cluster_components_arch.png
