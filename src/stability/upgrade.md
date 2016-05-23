@@ -22,7 +22,7 @@ Neutron Server 服务本身是无状态且高可用的，造成 Neutron Server d
  - expand 分支：该分支中的数据库迁移操作可以在 Neutron Server 运行状态中执行，因为该
 分支的数据库升级对服务没有影响。这些操作包括：创建表，创建字段等等。
  - contract 分支：如果正在运行着 Neutron Server，该分支的升级操作可能对服务有影响。
-这些操作包括：字段、表的删除，数据的迁移。
+这些操作包括：字段、表的删除，外键的创建，数据的迁移等。
 
 ### 升级 Neutron Server
 Liberty 之前的 Neutron Server 升级如下表示：
