@@ -4,7 +4,7 @@
 
 #### UnitedStack 知识库相关文章
 
- - 
+ - [ML2 插件](https://confluence.ustack.com/pages/viewpage.action?pageId=16108282)
 
 #### 技术说明
 
@@ -61,6 +61,11 @@
 ### 已完成测试的软件
 
 
+
+### 参考链接
+
+ [ml2-hierarchical-port-binding](https://specs.openstack.org/openstack/neutron-specs/specs/kilo/ml2-hierarchical-port-binding.html)
+ 
 
 
  [1]: ../../images/architecture/ml2-arch1.png
