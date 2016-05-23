@@ -9,7 +9,7 @@
 ### 简介
 
   Shaker是一个由 Mirantis 提交的，基于 HEAT 的开源分布式数据平面测试工具，主要用来测试OpenStack数据平面的性能。
-它集成了各种Linux下常用的测试工具，比如Iperf，Iperf3，Netperf等。
+它集成了各种Linux下常用的测试工具，比如iPerf，iPerf3，Netperf等。
 
 它的测试逻辑如图：
 
@@ -29,7 +29,7 @@
   我们以 Ubuntu 15.05 为模板，安装 Shaker 所需的所有软件包，指定以下命令运行 shaker-agent：
 `python shaker-agent --agent-id [vm-hostname] --server-endpoint 2.2.44.233:9999`
 
-关于指定的 server-endpoint， 我们在 Neutron 里创建外网IP段 2.2.0.0/16，并和管理网打通，
+关于指定的 server-endpoint， 我们在 Neutron 里创建外网IP段 2.2.0.0/16，
 从而使得当虚拟机绑定了 FloatingIP 后，可以从管理网 ssh 进入虚拟机。我们将 IP 地址2.2.244.233
 配置在运行 Shaker 命令节点的 br-ex（外部网桥）上，并且指定系统上一个空闲的端口（这里用的9999），运行
 `shaker --server-endpoint 2.2.44.233:9999 --scenario [template-name.yaml] --report report.html -d --agent-loss-timeout 480 --agent-join-timeout 480`

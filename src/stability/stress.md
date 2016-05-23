@@ -52,6 +52,45 @@
 ##### 测试说明
 
    本次测试通过观察重启 Neutron L3 Agent 时 Neutron 日志输出`L3 agent started`为准，确定重启所需时间。
+   Neutron L3 Agent 主要负责虚拟路由器生命周期的管理，其中也包括了绑定 FloatingIP 时产生的 Namespace
+   和虚拟路由器开启公网网关产生的 snat Namespace。
+   本次测试使用到的 Neutron L3 Agent 详细信息如下：
+
+```
+[root@server-233 ~(keystone_admin)]# neutron agent-show d66f00ba-e665-4152-93c3-53b6c4a06a35
++---------------------+-------------------------------------------------------------------------------+
+| Field               | Value                                                                         |
++---------------------+-------------------------------------------------------------------------------+
+| admin_state_up      | True                                                                          |
+| agent_type          | L3 agent                                                                      |
+| alive               | True                                                                          |
+| binary              | neutron-vpn-agent                                                             |
+| configurations      | {                                                                             |
+|                     |      "router_id": "",                                                         |
+|                     |      "agent_mode": "dvr_snat",                                                |
+|                     |      "gateway_external_network_id": "",                                       |
+|                     |      "handle_internal_only_routers": true,                                    |
+|                     |      "use_namespaces": true,                                                  |
+|                     |      "routers": 2,                                                            |
+|                     |      "interfaces": 3,                                                         |
+|                     |      "floating_ips": 2,                                                       |
+|                     |      "interface_driver": "neutron.agent.linux.interface.OVSInterfaceDriver",  |
+|                     |      "log_agent_heartbeats": false,                                           |
+|                     |      "external_network_bridge": "br-ex",                                      |
+|                     |      "ex_gw_ports": 2                                                         |
+|                     | }                                                                             |
+| created_at          | 2016-04-15 10:02:50                                                           |
+| description         |                                                                               |
+| heartbeat_timestamp | 2016-05-23 08:16:15                                                           |
+| host                | server-233                                                                    |
+| id                  | d66f00ba-e665-4152-93c3-53b6c4a06a35                                          |
+| started_at          | 2016-05-23 08:12:15                                                           |
+| topic               | l3_agent                                                                      |
++---------------------+-------------------------------------------------------------------------------+
+```
+
+`由以上数据可知，本 L3 Agent 管理两个虚拟路由器（routers），三个网关设备，两个 FloatingIP。`
+
 
 ##### 测试步骤
 1. 通过 stress 给系统达到不同的负载

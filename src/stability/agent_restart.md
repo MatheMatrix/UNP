@@ -4,7 +4,7 @@
 
 ### 简介
 
- 影响数据平面的 Neutron Agent 有两个
+ 对数据平面有潜在影响的 Neutron Agent
  
 - Neutron L3 Agent
 - Neutron OpenvSwitch Agent
@@ -75,16 +75,41 @@ Neutron L3 Agent 主要负责虚拟路由器的生命周期管理，绑定的所
 
 > drop_flows_on_start=False
 
+但是在实验过程中，当 drop_flows_on_start=False 时，此时重启 OVS Agent 时也造成虚拟机流量中断，这是由于重新
+生成了 OVS Patch Port 导致的，代码如下：
+
+    
+    def setup_integration_br(self):
+        '''Setup the integration bridge.
+        '''
+        self.int_br.set_agent_uuid_stamp(self.agent_uuid_stamp)
+        # Ensure the integration bridge is created.
+        # ovs_lib.OVSBridge.create() will run
+        #   ovs-vsctl -- --may-exist add-br BRIDGE_NAME
+        # which does nothing if bridge already exists.
+        self.int_br.create()
+        self.int_br.set_secure_mode()
+        self.int_br.setup_controllers(self.conf)
+
+        self.int_br.delete_port(self.conf.OVS.int_peer_patch_port)
+        if self.conf.AGENT.drop_flows_on_start:
+            self.int_br.delete_flows()
+        self.int_br.setup_default_table()
+    
+由上面的代码可以看出，当设置 drop_flows_on_start=False ，会删除Patch Port。因此导致了测试中虚拟机流量的中断。
+该 [Bug](https://bugs.launchpad.net/neutron/+bug/1514056) 在 Launchpad 上注册，Bug fix
+的 [patch](https://review.openstack.org/#/c/299243/) 已 merge 到了Liberty 分支的代码中。
+
 ##### 测试步骤
 1. 在两台计算节点上分别创建一台虚拟机；
-2. 在其中一台虚拟机对另一台虚拟机进行 IPerf 测试；
+2. 在其中一台虚拟机对另一台虚拟机进行 iPerf 测试；
 3. 设置 drop_flows_on_start=True 
-4. 同时重启两台计算节点的 Neutron OpenvSwitch Agent，观察 IPerf 流量是否有中断或者速率减少的现象。 
+4. 同时重启两台计算节点的 Neutron OpenvSwitch Agent，观察 iPerf 流量是否有中断或者速率减少的现象。 
 5. 设置 drop_flows_on_start=False
-6. 同时重启两台计算节点的 Neutron OpenvSwitch Agent，观察 IPerf 流量是否有中断或者速率减少的现象。 
+6. 同时重启两台计算节点的 Neutron OpenvSwitch Agent，观察 iPerf 流量是否有中断或者速率减少的现象。 
 
 ##### 测试结果
-- 设置 drop_flows_on_start=True时 IPerf 测试结果
+- 设置 drop_flows_on_start=True时 iPerf 测试结果
 
 ``` 
 root@vm-233-111:~# iperf -c 10.10.10.5 -i 1 -t 100
@@ -112,7 +137,7 @@ TCP window size: 45.0 KByte (default)
 ```
 
 
-- 设置 drop_flows_on_start=False 时 IPerf 测试结果
+- 设置 drop_flows_on_start=False 时 iPerf 测试结果
 
 
 ```
@@ -137,11 +162,10 @@ TCP window size: 45.0 KByte (default)
 [  3] 11.0-12.0 sec   300 MBytes  2.52 Gbits/sec
 [  3] 12.0-13.0 sec   327 MBytes  2.74 Gbits/sec
 [  3] 13.0-14.0 sec   332 MBytes  2.78 Gbits/sec
-[  3] 14.0-15.0 sec   116 MBytes   977 Mbits/sec
-[  3] 15.0-16.0 sec   194 MBytes  1.63 Gbits/sec
-[  3] 16.0-17.0 sec   200 MBytes  1.68 Gbits/sec
-[  3] 17.0-18.0 sec   262 MBytes  2.20 Gbits/sec
-[  3] 18.0-19.0 sec   228 MBytes  1.91 Gbits/sec
+[  3] 14.0-15.0 sec   194 MBytes  1.63 Gbits/sec
+[  3] 15.0-16.0 sec   200 MBytes  1.68 Gbits/sec
+[  3] 16.0-17.0 sec   262 MBytes  2.20 Gbits/sec
+[  3] 17.0-18.0 sec   228 MBytes  1.91 Gbits/sec
 ```
 
 - 设置 drop_flows_on_start=True 时 Ping 测试结果
@@ -187,28 +211,3 @@ TCP window size: 45.0 KByte (default)
 1. 当 drop_flows_on_start=False 或者 True 时候，此时重启 OVS Agent 时不会造成 FloaingIP Ping 丢包。
 2. 当 drop_flows_on_start=True 时，此时重启 OVS Agent 时，由于要重新生成流表规则，因此导致
 虚拟机流量中断。
-3. 当 drop_flows_on_start=False 时，此时重启 OVS Agent 时也造成虚拟机流量中断，这是由于重新
-生成了 OVS Patch Port 导致的，代码如下：
-
-    
-    def setup_integration_br(self):
-        '''Setup the integration bridge.
-        '''
-        self.int_br.set_agent_uuid_stamp(self.agent_uuid_stamp)
-        # Ensure the integration bridge is created.
-        # ovs_lib.OVSBridge.create() will run
-        #   ovs-vsctl -- --may-exist add-br BRIDGE_NAME
-        # which does nothing if bridge already exists.
-        self.int_br.create()
-        self.int_br.set_secure_mode()
-        self.int_br.setup_controllers(self.conf)
-
-        self.int_br.delete_port(self.conf.OVS.int_peer_patch_port)
-        if self.conf.AGENT.drop_flows_on_start:
-            self.int_br.delete_flows()
-        self.int_br.setup_default_table()
-    
-由上面的代码可以看书，当设置 drop_flows_on_start=False ，会删除Patch Port。因此导致了测试中虚拟机流量的中断。
-该 [Bug](https://bugs.launchpad.net/neutron/+bug/1514056) 在 Launchpad 上注册，Bug fix
-的 [patch](https://review.openstack.org/#/c/299243/) 已 merge 到了Liberty 分支的代码中。
-
