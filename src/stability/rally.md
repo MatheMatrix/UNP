@@ -49,6 +49,10 @@
 
  完整的 Rally 测试结果可以[参考这里](../../attachment/rally.html)
 
+### 存在的问题
+目前当运行 Rally 测试时有可能遇到 IpAddressGenerationFailure 的 [Bug](https://bugs.launchpad.net/neutron/+bug/1562887)。
+
+
 
  [1]: ../../images/stability/rally.png
  [2]: ../../images/stability/rally_result.png
