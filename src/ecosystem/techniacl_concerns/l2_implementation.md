@@ -47,7 +47,7 @@
  
 #### 网络拓扑
 
- 目前 OpenStack 比较主流的是 VxLan 网络类型，所以我们也推荐用户使用 VxLan 网络解决 Vlan 网络 Scale 的限制。同时为了实现最佳性能，目前大部分厂商的参考实现都是基于 Vlan－VxLan 双层架构的，即“多层端口绑定”上所描述的架构。鉴于早期版本的 VxLan 缺乏控制平面和三层路由的相关参考，我们建议通过 EVPN 或其他手段作为 VxLan 的控制平面解决 VxLan 的一些 Scale 问题，关于 VxLan 的详细说明参考 [架构－VxLan](../../architecture/vxlan.md)。
+ 目前 OpenStack 比较主流的是 VxLan 网络类型，所以我们也推荐用户使用 VxLan 网络解决 Vlan 网络 Scale 的限制。同时为了实现最佳性能，目前大部分厂商的参考实现都是基于 Vlan－VxLan 双层架构的，即“多层端口绑定”上所描述的架构。鉴于早期版本的 VxLan 缺乏控制平面和三层路由的相关参考，我们建议通过 EVPN 或其他手段作为 VxLan 的控制平面解决 VxLan 的一些 Scale 问题，关于 VxLan 的详细说明参考 [架构－VxLan](../../architecture/vxlan.md) 和 [生态系统-技术考察点-虚拟路由器](../virtual_router.md)。
 
 ### 最佳实践
 

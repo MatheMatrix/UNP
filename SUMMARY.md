@@ -25,7 +25,7 @@
 * [生态系统](src/ecosystem/preface.md)
    * [技术重点](src/ecosystem/technical_concerns.md)
        * [二层隔离网络实现](src/ecosystem/techniacl_concerns/l2_implementation.md)
-       * [虚拟路由器实现](src/ecosystem/techniacl_concerns/vitrual_router.md)
+       * [虚拟路由器实现](src/ecosystem/techniacl_concerns/virtual_router.md)
 * 系统
 * 用户使用场景
 
