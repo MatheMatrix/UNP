@@ -15,11 +15,11 @@
  - 转发平面：指承载 Overlay 报文的物理网络
 
 ### Overlay 主要技术标准和比较
-  当前主流的 Overlay 技术主要有 VxLAN，GRE/NVGRE 和 STT。这三种二层 Overlay 
+  当前主流的 Overlay 技术主要有 VXLAN，GRE/NVGRE 和 STT。这三种二层 Overlay 
 技术，大体思路都是将以太网报文承载到某种隧道层面，差异性在于选择和构造隧道
 的不同，而底层均是 IP 转发。
 
- - VxLAN。 VxLAN 是将以太网报文封装在 UDP 传输层上的一种隧道转发模式，目的 UDP 端口号为4798；
+ - VXLAN。 VXLAN 是将以太网报文封装在 UDP 传输层上的一种隧道转发模式，目的 UDP 端口号为4798；
 为了使 VXLAN 充分利用承载网络路由的均衡性， VXLAN 通过将原始以太网数据头(MAC、IP、四层端口号等)的
  HASH 值作为 UDP 的号；采用24比特标识二层网络分段，称为 VNI(VXLAN Network Identifier)，
 类似于 VLAN ID 作用；未知目的、广播、组播等网络流量均被封装为组播转发，
@@ -38,14 +38,14 @@
 
 |技术名称|支持者|支持方式|网络虚拟化方式|数据新增报文长度|链路HASH能力|
 |:--:|:--:|:--:|:--:|:--:|:--:|
-|VxLAN|Cisco/VMWARE/Citrix/Red Hat/Broadcom|L2 over UDP|VxLAN报头 24 bit VNI|50Byte(+原数据)|现有网络可进行L2 ~ L4 HASH|
+|VXLAN|Cisco/VMWARE/Citrix/Red Hat/Broadcom|L2 over UDP|VXLAN报头 24 bit VNI|50Byte(+原数据)|现有网络可进行L2 ~ L4 HASH|
 |NVGRE|HP/Microsoft/Broadcom/Dell/Intel|L2 over GRE|NVGRE 报头 24 bit VSI|42Byte(+原数据)|GRE头的HASH 需要网络升级|
 |STT|VMWare|无状态TCP，即L2在类似TCP的传输层|STT报头 64 bit Context ID|58 ~ 76Byte(+原数据)|现有网络可进行 L2 ~ L4 HASH|
 
 
-### VxLAN 的实现
+### VXLAN 的实现
 
-VxLAN 将二层数据帧封装成 UDP 包
+VXLAN 将二层数据帧封装成 UDP 包
 
  ![vxlan][1]
 
@@ -67,9 +67,9 @@ VxLAN 将二层数据帧封装成 UDP 包
  - VTEP 不可以对 VXLAN 包分段
 
 
-### Neutron 对 VxLAN 的支持
-  Neutron 通过 OpenvSwitch （以下简称 OVS）支持 VxLAN。OVS 在计算节点/网路节点的 br-tun 上建立多个 tunnel port ，
-和其他节点的 tunnel port 之间建立点对点的 VxLAN Tunnel。 Tunnel Port 在 OVS 上的形式如下：
+### Neutron 对 VXLAN 的支持
+  Neutron 通过 OpenvSwitch （以下简称 OVS）支持 VXLAN。OVS 在计算节点/网路节点的 br-tun 上建立多个 tunnel port ，
+和其他节点的 tunnel port 之间建立点对点的 VXLAN Tunnel。 Tunnel Port 在 OVS 上的形式如下：
 
 ```
 Bridge br-tun
@@ -86,14 +86,14 @@ Bridge br-tun
                 remote_ip="192.168.100.68"}
 ```
 
-Neutron VxLAN network 通过使用 segmentation_id 作为VxLAN网络标识（VNI），类似于 VLAN ID，
+Neutron VXLAN network 通过使用 segmentation_id 作为VXLAN网络标识（VNI），类似于 VLAN ID，
 来实现不同网络流量之间的隔离。
 
 
 
 References：
 1. [Data Center Overlay Technologies](http://www.cisco.com/c/en/us/products/collateral/switches/nexus-9000-series-switches/white-paper-c11-730116.html)
-2. [Open vSwitch + GRE/VxLAN 组网](http://www.cnblogs.com/sammyliu/p/4627230.html)
+2. [Open vSwitch + GRE/VXLAN 组网](http://www.cnblogs.com/sammyliu/p/4627230.html)
 3. [基于多租户的云计算Overlay网络](http://www.h3c.com.cn/About_H3C/Company_Publication/IP_Lh/2013/04/Home/Catalog/201309/796466_30008_0.htm)
 
 [1]: ../../images/architecture/vxlan.jpg
