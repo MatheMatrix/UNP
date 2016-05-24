@@ -10,6 +10,7 @@
    * [Vlan](src/architecture/vlan.md)
    * [SRIOV](src/architecture/sriov.md)
 * [功能](src/funcs/preface.md)
+   * [RBAC](src/funcs/rbac_networks.md)
 * 提升
 * 部署
 * 性能
