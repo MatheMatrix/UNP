@@ -100,11 +100,6 @@ Created a new rbac_policy:
 | cd6b992a-ac14-4524-979c-9c8291246b73 | rbac-net |                                                  |
 +--------------------------------------+----------+--------------------------------------------------+
 ```
-- 尝试在 demo 用户中在 rbac-net 中创建一个子网，失败 – 策略不允许
-```
-[root@liberty ~(keystone_demo)]# neutron subnet-create rbac-net 10.0.0.0/24
-rule:create_subnet on {'host_routes': <object object at 0x7fbbea4eaaa0>, 'prefixlen': <object object at 0x7fbbea4eaaa0>, 'name': '', 'enable_dhcp': True, u'network_id': u'cd6b992a-ac14-4524-979c-9c8291246b73', 'tenant_id': u'2ae1333f17094c4a83a11a02ba1aeddf', 'dns_nameservers': <object object at 0x7fbbea4eaaa0>, 'ipv6_ra_mode': <object object at 0x7fbbea4eaaa0>, 'allocation_pools': <object object at 0x7fbbea4eaaa0>, 'gateway_ip': <object object at 0x7fbbea4eaaa0>, u'ip_version': 4, 'ipv6_address_mode': <object object at 0x7fbbea4eaaa0>, u'cidr': u'10.0.0.0/24', u'network:tenant_id': u'cd1d7694e4aa4585b6ac303f089c56e0', 'subnetpool_id': <object object at 0x7fbbea4eaaa0>} by {'domain': None, 'project_name': u'demo', 'tenant_name': u'demo', 'project_domain': None, 'timestamp': '2016-04-29 10:14:50.552269', 'auth_token': '981d65a7066240af8850eb0065e990e1', 'resource_uuid': None, 'is_admin': False, 'user': u'90f23f60f68d4db680ff3ab2f95a7c11', 'tenant': u'2ae1333f17094c4a83a11a02ba1aeddf', 'read_only': False, 'project_id': u'2ae1333f17094c4a83a11a02ba1aeddf', 'user_id': u'90f23f60f68d4db680ff3ab2f95a7c11', 'show_deleted': False, 'roles': [u'_member_'], 'user_identity': '90f23f60f68d4db680ff3ab2f95a7c11 2ae1333f17094c4a83a11a02ba1aeddf - - -', 'tenant_id': u'2ae1333f17094c4a83a11a02ba1aeddf', 'request_id': 'req-27882d6d-18ce-4937-a1cc-8402fbe3774d', 'user_domain': None, 'user_name': u'demo'} disallowed by policy
-```
 - 在 admin 用户下基于 rbac-net 创建一个子网成功
 ```
 [root@liberty ~(keystone_admin)]# neutron subnet-create rbac-net 192.168.0.0/24
@@ -159,5 +154,5 @@ Created a new port:
 - 在指定目标租户时仅可指定一个租户，对于多个租户的共享组，需要创建多个 RBAC 策略。
 
 ### 潜在问题
-- 在创建 RBAC 策略，并以目标租户名字为参数进行指定时，该 RBAC 策略可被成功创建，但目标租户并不能正常使用该网络对象资源。只有将目标租户 UUID 作为参数进行指定时，基于该 RBAC 策略才真正生效。
-- 目标租户选项参数默认为非必要参数，且根据[官方文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html)来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
+- 在创建 RBAC 策略，并以目标租户名字为参数进行指定时，该 RBAC 策略可被成功创建，但目标租户并不能正常使用该网络对象资源。只有将目标租户 UUID 作为参数进行指定时，基于该 RBAC 策略才真正生效。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1585082) 已提出，需进一步讨论。
+- 目标租户选项参数默认为非必要参数，且根据[官方文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html)来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
