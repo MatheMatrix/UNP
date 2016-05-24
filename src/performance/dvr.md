@@ -29,7 +29,7 @@
 `说明：所有测试使用的虚拟机配置均相同`
 
 ### 测试工具
-  - [Iperf](https://iperf.fr/)
+  - [iPerf](https://iperf.fr/)
   - [Stress](../stability/stress.md)
 
 ### 测试结果
