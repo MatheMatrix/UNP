@@ -124,3 +124,12 @@ network_vlan_ranges = physnet3:100:200,physnet3:300:400
 
 [1]: ../../images/architecture/vlan.png
 [2]: ../../images/architecture/vlan_openstack.png
+
+
+
+
+References:
+
+1. https://zh.wikipedia.org/wiki/数据链路层
+2. http://www.cnblogs.com/sammyliu/p/4626419.html
+3. http://www.microhowto.info/tutorials/802.1q.html
