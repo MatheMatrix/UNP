@@ -198,7 +198,15 @@ Created a new network:
 
  ![vlan_topology][2]
 
-`说明：在同一计算节点内的所有虚拟机都会首先上联到各自的 Linux Bridge 上，
+ - tap：虚拟机的虚拟网卡
+ - qbr：Linux Bridge
+ - qvb、qvo：Linux Veth device
+ - br-int、ovsbr3、ovsbr4：OpenvSwitch Bridge
+ - patch：OpenvSwitch Patch device
+ - eth3、eth4：物理网卡
+
+`
+说明：在同一计算节点内的所有虚拟机都会首先上联到各自的 Linux Bridge 上，
 在通过 Linux Veth 设备连接到本地虚拟交换机（br-int）上，br-int 通过 OpenvSwitch Patch
 设备连接若干本地虚拟机物理交换机（ovsbr3, ovsbr4），最后，计算节点上的物理网卡桥接到 ovsbr3 或者ovsbr4 上。
 `
