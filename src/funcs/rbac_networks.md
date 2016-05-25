@@ -28,6 +28,7 @@ usage: neutron rbac-create [-h] [-f {html,json,shell,table,value,yaml}]
                            {access_as_external,access_as_shared}
                            RBAC_OBJECT
 ```
+这里需要解释一下的是，在 [Mitaka 版本](http://specs.openstack.org/openstack/neutron-specs/specs/mitaka/rbac-qos-policies.html) [2] 中新增了对 qos-policy 提供的 RBAC 策略支持，然而在当前版本(UNP1.0)中暂不提供该选项。
 ```
 usage: neutron rbac-delete [-h] [--request-format {json}] RBAC_POLICY
 ```
@@ -188,8 +189,9 @@ Created a new port:
 
 ### 潜在问题
 - 在创建 RBAC 策略，并以目标租户名字为参数进行指定时，该 RBAC 策略可被成功创建，但目标租户并不能正常使用该网络对象资源。只有将目标租户 UUID 作为参数进行指定时，基于该 RBAC 策略才真正生效。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1585082) 已提出，需进一步讨论。
-- 目标租户选项参数默认为非必要参数，且根据[官方文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html) [2] 来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
+- 目标租户选项参数默认为非必要参数，且根据[官方文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html) [3] 来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
 
 ### 参考文档
 [1] "Networking service command-line client", 可参见 http://docs.openstack.org/cli-reference/neutron.html  
-[2] "Role-based Access Control for Networks", 可参见 http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html
+[2] "Role-based Access Control for QoS policies", 可参见 http://specs.openstack.org/openstack/neutron-specs/specs/mitaka/rbac-qos-policies.html  
+[3] "Role-based Access Control for Networks", 可参见 http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html
