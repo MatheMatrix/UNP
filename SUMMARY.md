@@ -26,6 +26,7 @@
    * [技术重点](src/ecosystem/technical_concerns.md)
        * [二层隔离网络实现](src/ecosystem/techniacl_concerns/l2_implementation.md)
        * [虚拟路由器实现](src/ecosystem/techniacl_concerns/virtual_router.md)
+       * [社区 API 支持](src/ecosystem/techniacl_concerns/community_api.md)
 * 系统
 * 用户使用场景
 
