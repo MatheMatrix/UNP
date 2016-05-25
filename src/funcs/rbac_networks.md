@@ -28,7 +28,7 @@ usage: neutron rbac-create [-h] [-f {html,json,shell,table,value,yaml}]
                            {access_as_external,access_as_shared}
                            RBAC_OBJECT
 ```
-这里需要解释一下的是，在 [Mitaka 版本](http://specs.openstack.org/openstack/neutron-specs/specs/mitaka/rbac-qos-policies.html) [2] 中新增了对 qos-policy 提供的 RBAC 策略支持，然而在当前版本(UNP1.0)中暂不提供该选项。
+这里需要解释一下的是，qos-policy 参数是在 [Mitaka 版本](http://specs.openstack.org/openstack/neutron-specs/specs/mitaka/rbac-qos-policies.html) [2] 中新增的特性；与此同时，access_as_external 参数虽然在 Liberty 版本中可见，但实际上起并未真正实现。因此，这两个参数在当前版本(UNP1.0)中暂不能被使用。
 ```
 usage: neutron rbac-delete [-h] [--request-format {json}] RBAC_POLICY
 ```
