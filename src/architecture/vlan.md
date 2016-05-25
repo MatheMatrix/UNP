@@ -2,6 +2,11 @@
 
 ----
 
+## UnitedStack 知识库相关文章
+
+ - [UnitedStack Vlan 网络方案说明](https://confluence.ustack.com/download/attachments/3642944/UnitedStack%20Vlan%20%E7%BD%91%E7%BB%9C%E6%96%B9%E6%A1%88%E8%AF%B4%E6%98%8E.pdf?version=1&modificationDate=1448375766440&api=v2)
+ - [关于基础网络（与 Vlan 网络）、策略路由](https://confluence.ustack.com/pages/viewpage.action?pageId=9642682)
+
 ## 数据链路层 ( L2 ) 基础知识
 
  数据链路层 ( Data Link Layer ) 是 [OSI 参考模型](https://zh.wikipedia.org/wiki/OSI%E6%A8%A1%E5%9E%8B)第二层，
@@ -56,6 +61,12 @@ VLAN 是一种将一个交换机分成多个交换机的一种方法。
 - VLAN 是基于 L2 的，因此很难跨越 L2 的边界，限制了网络的灵活性
 - VLAN 的配置需手动介入较多
 
+
+## Neutron 中的 VLAN 拓扑
+
+![vlan_openstack][2]
+
+
 ## Neutron 对 VLAN 网络的支持
 
 ### VLAN 池化
@@ -100,27 +111,27 @@ network_vlan_ranges = physnet3:100:200,physnet3:300:400
 网络，可参考 [Neutron 中的 RBAC](../funcs/rbac_networks.md)一节。
 
 
-## Neutron 中的 VLAN 拓扑
+### 总结
 
-![vlan_openstack][2]
+ 无论是哪种 VLAN 网络模式，都可以配合使用网络节点，或者单独使用（不使用网络节点）。
+下面详细介绍这两种情况：
 
-
-## VLAN 网络的使用场景
-
-根据对于 VLAN 网络不同的使用场景，大体可分为两类：
-
- - 自服务 VLAN 网络 
- - 管理员 VLAN 网络
-
-### 自服务 VLAN 网络
- 将网关配置在物理设备上，即为自服务 VLAN 网络。由于网关配置在了物理设备上，
-因此这种 VLAN 网络无需网络节点。因此丧失了较多的灵活性，也丧失网络节点上的多种功能，例如：L3 HA，LBaaS，VPN等。
+1. 对于不使用网络节点的情况，即，将网关配置在物理设备上，这种 VLAN 网络由于没有网络节点。
+因此丧失了较多的灵活性，也丧失网络节点上的多种功能，例如：L3 HA，LBaaS，VPN等。 
 但是，正是由于网关配置在物理设备上，因此本种 VLAN 网络性能很高，经过测试，虚拟机的东西流量可以
 达到物理网卡的限速。本种 VLAN 网络也有一个优点就是方便 Neutron 网络和企业内网的打通。
-
-### 管理员 VLAN 网络
- 将网关配置在网络节点上，即为管理员 VLAN 网络。由于存在网络节点，因此这种 VLAN 网络
+ 
+2. 对于使用网络节点的情况，即，将网关配置在网络节点上，这种 VLAN 网络
 仍然可以使用网络节点提供的多种高级网络服务。但是网络性能会有所降低。
+
+
+因此，对比以上各种情况，推荐：
+
+- 池化 VLAN + 有网络节点
+- 预定义 VLAN + 无网路节点
+
+
+
 
 [1]: ../../images/architecture/vlan.png
 [2]: ../../images/architecture/vlan_openstack.png
