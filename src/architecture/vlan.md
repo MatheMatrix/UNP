@@ -58,183 +58,69 @@ VLAN 是一种将一个交换机分成多个交换机的一种方法。
 
 ## Neutron 对 VLAN 网络的支持
 
- Neutron 支持预先定义一段或者多段 VLAN 范围，从而将 VLAN 池化，最终直接 VLAN 网络。
-创建本节通过具体示例讲解 Neutron 对 VLAN 网络如何支持，以及 Neutron 的详细配置。
-`说明：本示例中我们配置 VLAN 的范围是5 ~ 6 。`
+### VLAN 池化
 
-### 交换机配置相应 VLAN 并验证
-
- Linux 支持通过创建 VLAN 子接口的形式来支持发送或接收相应 VLAN 的数据包。
-首先，通过在 Linux 机器上执行`lsmod | grep 8021q`确定加载了相应内核模块。其次，通过 `ip` 命令
-创建 VLAN 子接口
-
-```
- ip link add link p3p1 name p3p1.5 type vlan id 5
- ip link add link p3p1 name p3p1.6 type vlan id 6
-```
-
-或者通过 `vconfig` 命令创建 VLAN 子接口
-
-```
-vconfig add p3p1 5
-vconfig add p3p1 6
-```
-最后通过在相应的 VLAN 子接口上配置相应的 IP 地址来检查联通性是否正常。
-
-```
-ifconfig p3p1.5 192.168.5.10/24
-ifconfig p3p1.6 192.168.6.10/24
-```
-
-检查连通性：
-```
-[root@server-233 ~(keystone_admin)]# ping 192.168.6.1
-PING 192.168.6.1 (192.168.6.1) 56(84) bytes of data.
-64 bytes from 192.168.6.1: icmp_seq=1 ttl=64 time=0.969 ms
-^C
---- 192.168.6.1 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.969/0.969/0.969/0.000 ms
-[root@server-233 ~(keystone_admin)]# ping 192.168.5.1
-PING 192.168.5.1 (192.168.5.1) 56(84) bytes of data.
-64 bytes from 192.168.5.1: icmp_seq=1 ttl=64 time=1.05 ms
-^C
---- 192.168.5.1 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 1.056/1.056/1.056/0.000 ms
-```
-
-联通性测试正常，删除上述创建的 VLAN 接口。
-
-```
-ip link delete p3p1.5
-ip link delete p3p1.6
-```
-
-### Neutron 配置
-
- 在 Neutron Server 节点上对配置文件 `plugins/ml2/ml2_conf.ini`，进行如下修改：
+  Neutron 支持预先定义一段或者多段 VLAN 范围，从而将 VLAN *池化*，最终直接创建 VLAN 网络。
+具体的做法是，预先在 OpenStack 物理环境中配置相应的 VLAN 范围，在验证相应 VLAN 创建成功
+(详情验证过程请参考部署[检查 VLAN ](../performance/preface.md)一节)后对 Neutron 进行相关配置。
+设置 Neutron Server 的配置文件`plugins/ml2/ml2_conf.ini`中的`network_vlan_ranges`选项，例如：
 
 ```
 [ml2_type_vlan]
-network_vlan_ranges = physnet3:5:5,physnet4:6:6
+network_vlan_ranges = physnet3:100:200
 ```
 
-`说明：
-network_vlan_ranges 的配置格式是：<physical_network>[:<vlan_min>:<vlan_max>]
-上述配置说明在 Neutron 中定义两个 VLAN 网络，VLAN ID 分别是 5 和 6 。
-也可以通过 network_vlan_ranges = physnet3:10:20 的形式定义 VLAN 池。`
+network_vlan_ranges 的配置格式是：<physical_network>[:<vlan_min>:<vlan_max>] 
+上述示例表示在 Neutron 中定义一个物理网络，并且该物理网络的范围是 VLAN 100 ~ VLAN 200。
 
- 在计算节点 / 网络节点上对配置文件 `plugins/ml2/openvswitch_agent.ini`，进行如下修改：
+当然，也可以配置多个物理网络，例如：
 
 ```
-bridge_mappings = physnet3:ovsbr3,physnet4:ovsbr4
+[ml2_type_vlan]
+network_vlan_ranges = physnet3:100:200,physnet4:300:400
 ```
+上述示例表示在 Neutron 中定义两个物理网络，每个物理网络的范围是 VLAN 100 ~ VLAN 200 和 VLAN 300 ~ VLAN 400。
 
-手动创建 OpenvSwitch 网桥：
-
-```
-ovs-vsctl add-br ovsbr3
-ovs-vsctl add-br ovsbr4
-```
-
-### 创建 VLAN 网络
-
- - 指定 VLAN ID 创建 VLAN 网络
+也可以在一个物理网络中配置多个不连续的 VLAN 范围，例如：
 
 ```
-
-[root@server-233 ~(keystone_admin)]# neutron net-create \
---provider:network_type=vlan \
---provider:physical_network=physnet3 \
---provider:segmentation_id=6 vlan_network
-Created a new network:
-+---------------------------+--------------------------------------+
-| Field                     | Value                                |
-+---------------------------+--------------------------------------+
-| admin_state_up            | True                                 |
-| id                        | 10d0e00f-2e84-4f00-a74e-fb7783ca55c8 |
-| mtu                       | 0                                    |
-| name                      | vlan_network                         |
-| provider:network_type     | vlan                                 |
-| provider:physical_network | physnet3                             |
-| provider:segmentation_id  | 6                                    |
-| router:external           | False                                |
-| shared                    | False                                |
-| status                    | ACTIVE                               |
-| subnets                   |                                      |
-| tenant_id                 | ef979882f1954a0fa4ce7daf244aa557     |
-+---------------------------+--------------------------------------+
+[ml2_type_vlan]
+network_vlan_ranges = physnet3:100:200,physnet3:300:400
 ```
+上述示例表示在 Neutron 中定义一个物理网络，范围是 VLAN 100 ~ VLAN 200 和 VLAN 300 ~ VLAN 400。
 
- - 从 VLAN 池中创建 VLAN 网络
+通过设置 Neutron Server 中的 `tenant_network_types` 参数为 `vlan`，使得租户默认创建的网络
+类型为 VLAN 网络，具体的 VLAN ID 会从定义的 VLAN 范围中轮询获得。也可通过指定 VLAN ID 创建网络。
 
-```
-[root@server-233 ~(keystone_admin)]# neutron net-create \
---provider:network_type=vlan vlan_net
-Created a new network:
-+---------------------------+--------------------------------------+
-| Field                     | Value                                |
-+---------------------------+--------------------------------------+
-| admin_state_up            | True                                 |
-| id                        | cc6d7263-3b1a-419e-8bdf-266ab406bf5e |
-| mtu                       | 0                                    |
-| name                      | vlan_net                             |
-| provider:network_type     | vlan                                 |
-| provider:physical_network | physnet3                             |
-| provider:segmentation_id  | 5                                    |
-| router:external           | False                                |
-| shared                    | False                                |
-| status                    | ACTIVE                               |
-| subnets                   |                                      |
-| tenant_id                 | ef979882f1954a0fa4ce7daf244aa557     |
-+---------------------------+--------------------------------------+
-```
-
-### 拓扑结构
-
-根据上述的配置， VLAN 网络在 Neutron 中的拓扑结构如下：
+### 预定义 VLAN 网络
+  
+ Neutron 同样支持通过预创建 VLAN 网络来对外提供服务。具体定义 VLAN 的方式和`支持 VLAN 池化` 中提到
+的方式大体一致。需要指出的是，由于是预定义 VLAN 网络，OpenStack 管理员需要知道所有 VLAN 网络的 VLAN ID
+和每个 VLAN 网络对应的 CIDR，从而在 Neutron 中预先创建这些网络。如果不同的 Tenant 需要共享不同的 VLAN
+网络，可参考 [Neutron 中的 RBAC](../funcs/rbac_networks.md)一节。
 
 
- ![vlan_topology][2]
+## Neutron 中的 VLAN 拓扑
 
- - tap：虚拟机的虚拟网卡
- - qbr：Linux Bridge
- - qvb、qvo：Linux Veth device
- - br-int、ovsbr3、ovsbr4：OpenvSwitch Bridge
- - patch：OpenvSwitch Patch device
- - eth3、eth4：物理网卡
-
-`
-说明：在同一计算节点内的所有虚拟机都会首先上联到各自的 Linux Bridge 上，
-在通过 Linux Veth 设备连接到本地虚拟交换机（br-int）上，br-int 通过 OpenvSwitch Patch
-设备连接若干本地虚拟机物理交换机（ovsbr3, ovsbr4），最后，计算节点上的物理网卡桥接到 ovsbr3 或者ovsbr4 上。
-`
-
-## 用户使用场景
-
-### 对性能网络有要求
-
- - 对网络性能有高要求的用户，建议选用 VLAN 网络。经过测试，当 VLAN 网络的网关地址
-在物理设备上时（此时没有网络节点），通过 iPerf 进行流量测试，可以打满物理网卡的限速。
-
- - 对网络性能没有较高要求，并且想拥有网络节点的各种功能（比如L3 HA，LBaaS，VPN等）的用户，
-也可以使用 VLAN 网络，只需将 VLAN 网络的网关设置在网络节点上即可。
+![vlan_openstack][2]
 
 
-### 打通企业内网
+## VLAN 网络的使用场景
 
- 打通 Neutron 网络和物理网络。通过 VLAN 网络的形式，无论 VLAN 的网关地址设置在物理设备还是网络节点上，
-都可以比较容易的将 Neutron 网络和企业内网打通。
+根据对于 VLAN 网络不同的使用场景，大体可分为两类：
 
+ - 自服务 VLAN 网络 
+ - 管理员 VLAN 网络
 
-References:
+### 自服务 VLAN 网络
+ 将网关配置在物理设备上，即为自服务 VLAN 网络。由于网关配置在了物理设备上，
+因此这种 VLAN 网络无需网络节点。因此丧失了较多的灵活性，也丧失网络节点上的多种功能，例如：L3 HA，LBaaS，VPN等。
+但是，正是由于网关配置在物理设备上，因此本种 VLAN 网络性能很高，经过测试，虚拟机的东西流量可以
+达到物理网卡的限速。本种 VLAN 网络也有一个优点就是方便 Neutron 网络和企业内网的打通。
 
-1. https://zh.wikipedia.org/wiki/数据链路层
-2. http://www.cnblogs.com/sammyliu/p/4626419.html
-3. http://www.microhowto.info/tutorials/802.1q.html
-
-
+### 管理员 VLAN 网络
+ 将网关配置在网络节点上，即为管理员 VLAN 网络。由于存在网络节点，因此这种 VLAN 网络
+仍然可以使用网络节点提供的多种高级网络服务。但是网络性能会有所降低。
 
 [1]: ../../images/architecture/vlan.png
-[2]: ../../images/architecture/vlan_topology.png
+[2]: ../../images/architecture/vlan_openstack.png
