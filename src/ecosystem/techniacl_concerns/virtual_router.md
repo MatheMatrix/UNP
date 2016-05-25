@@ -69,7 +69,7 @@
  使用 EVPN 实现三层的好处是协议化和标准化，但是其实不如 OpenFlow 灵活。关于 IRB 目前一般认为 Symmetric IRB 是优于 Asymmetric IRB 的，但是一些厂商是同时支持两种模式的。
  
  
- ### 参考链接
+### 参考链接
  
  - [draft-ietf-bess-evpn-inter-subnet-forwarding](https://tools.ietf.org/html/draft-ietf-bess-evpn-inter-subnet-forwarding-01)
  - [BGP MPLS-Based Ethernet VPN (RFC7432)](https://tools.ietf.org/html/rfc7432)
