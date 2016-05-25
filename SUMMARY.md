@@ -12,7 +12,9 @@
 * [功能](src/funcs/preface.md)
 * 提升
 * 部署
-* 性能
+* [性能](src/performance/preface.md)
+   * [DVR场景下虚拟机的性能](src/performance/dvr.md)
+   * [HA场景下虚拟机的性能](src/performance/ha.md)
 * [稳定性](src/stability/preface.md)
    * [控制平面测试](src/stability/rally.md)
    * [数据平面测试](src/stability/shaker.md)
@@ -28,4 +30,3 @@
        * [虚拟路由器实现](src/ecosystem/techniacl_concerns/virtual_router.md)
 * 系统
 * 用户使用场景
-
