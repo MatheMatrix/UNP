@@ -34,6 +34,9 @@ HA router 总体架构如图
 
 ![ha-router-architecture][3]
 
+此外还有没有 开启 contrackd 同步 session，VRRP 主从切换之后丢失一部分现有的会话，但不会影响虚拟机
+跟外部新的会话。对于丢失的那部分会话，虚拟机内部通过重传能够保持。
+
 #### HA Router 创建过程
 ##### server-plugin
 
@@ -67,6 +70,7 @@ HA router 总体架构如图
 state_change_monitor进程的创建
 
 [5] HaRouter.process() 阶段会创建keepalived进程(VRRP + Healthchecking)
+
 
 采用 rally 的 create_and_update_routers 用例进行控制平面的压测，具体的 template:
 
@@ -156,8 +160,64 @@ rally 测试结果:
 
 #### 性能测试
 
-由于网络拓普架构并没有变化，所以性能相对 Legacy 并没有太大的变化
+由于 L3 HA 网络拓扑架构相对于 Classic 并没有变化，虚拟路由器是集中式的，但其实现
+和 DVR 一样基于内核路由和 Namespace，所以虚拟机东西向流量和虚拟机直接绑定
+FloatingIP 的总体系统吞吐会下降，单个实例会加长 IO 路径，但对其自身吞吐影响不大。
 
+#### 其它
+
+##### HA 与 DVR Router 共存的问题
+
+在 Liberty 稳定版本中，虚拟路由器不能同时具有 DVR 和 HA 的属性，一直问题，详见社区
+[问题](https://blueprints.launchpad.net/neutron/+spec/dvr-support-ha)描述。
+
+DVR 的高可用是针对与网路节点上的集中式 snat 的单点故障；同时应对需要在一个子网中
+的虚拟机内部通过 keepalived 等方法做高可用的特殊需求。
+
+该问题在社区 Mitaka 稳定版中解决，我们尝试进行代码 backport ，但存在较多的代码冲
+突。
+
+在当前的部署架构和默认配置下，默认 router 为非 HA，租户在创建 router 时可以选择为 DVR 或 HA。
+
+目前 DVR 的 SNAT 高可用解决方案是采用 Pacemaker 监控网络节点的状况；当检测到某个网络
+节点宕机时，会把该网络节点上的 DVR 路由器迁移到其余可用网络节点上，降低 SNAT 的故障时间。
+
+##### HA Router 的使用场景
+
+ * 租户需要在 虚拟机层自己维护 VIP 漂移的场景，并且 VIP 需要跟外部通信。例如，租户
+ 在同一个子网内的两个虚拟机上起 keepalived 进程，维护一个 VIP，同时需要通过router 的
+ NAT 功能使该 VIP 对外提供服务。这种情况下，集中式路由能够在网关上写 NAT 规则就能够实现，
+ 而分布式路由的 NAT 规则需要随 VIP 漂移，由于 neutron 控制平面对虚拟机内部的 VIP 漂移
+ 无感知，所以分布式路由无法满足要求，也不能在每个节点上都配上该 VIP 的 NAT 规则，会发生
+ IP冲突的问题
+
+ * 租户需要使用 Service VM 做虚拟路由的场景，见
+ [云平台上部署山石网科『云界』](https://confluence.ustack.com/pages/viewpage.action?pageId=16098168)
+ 也需要使用集中式路由
+
+##### VRRP 与 Pacemaker 两种高可用方案的对比
+
+两种方式都是业界广泛采用的 HA 实施方案，单在 L3 HA 这个场景中，设计思路上还是有所不同。
+
+首先，VRRP 的监控方法是对于某个具体的 router 来说的，router 中的 keepalived 互相
+同步，更接近真是的虚拟机通信状态，而 Pacemaker 的方法是对整个网络节点的状态监控；
+
+其次，VRRP 的切换是通过 keepalived 主从切换时执行脚本来实现，纯数据平面的操作，不需要控制平面
+地参与，而 Pacemaker 是通过迁移的方式来实现切换，在整个过程中的调用栈更长，在目的网络节点上也会
+进行更多的操作，故障时间相对于 VRRP 要长。
+
+##### L2 HA 与 L2 Population 共存的问题
+
+L2 Population 是通过预先下发 port 可达性的方法来较少隧道网络 (VxLAN/GRE) 通信过程中可能发生的
+组播，提高隧道网络的通信效率。由于采用 VRRP 的方式，主从切换是直接才数据平面发生，控制平面
+通过轮询 router 状态的方式需要过一小段时间才能知道切换的信息，进而更新 l2population可达信息。
+所以对于隧道网络，L3 HA 发生主从切换时，故障时间会变得稍长(30秒左右)。
+
+
+##### 部署方式及配置
+
+整体 Service Layout 相对于 Classic 没有发生变化，默认在 neutron.conf 中设置 l3_ha = False，
+以避免和 DVR 冲突，租户可以在创建 router 时指定 router 的 HA 属性。
 
 [1]: ../../images/architecture/scenario-classic-ovs-network2.png
 [2]: ../../images/architecture/scenario-l3ha-ovs-network2.png
