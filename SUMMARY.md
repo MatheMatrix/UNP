@@ -22,6 +22,10 @@
    * [Agent重启对数据层的影响](src/stability/agent_restart.md)
    * [升级对API停服时间减少](src/stability/upgrade.md)
 * 高级服务
-* 生态系统
+* [生态系统](src/ecosystem/preface.md)
+   * [技术重点](src/ecosystem/technical_concerns.md)
+       * [二层隔离网络实现](src/ecosystem/techniacl_concerns/l2_implementation.md)
+       * [虚拟路由器实现](src/ecosystem/techniacl_concerns/virtual_router.md)
 * 系统
 * 用户使用场景
+
