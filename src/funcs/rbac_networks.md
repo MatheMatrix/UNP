@@ -15,9 +15,42 @@
 这样的使用方式其实是很有局限性的，例如同一数据中心中的某一组租户间需要共用一个网络，而并不想将该网络开放给这个组以外的其他租户，那么此时并没有一个好的办法来解决这样的问题。
 
 ### 基于 RBAC 的网络控制策略
-Role Based Access Control (RBAC) 是一种用于定义用户角色及其权限的机制，这对于大规模网络环境的管理提供了更安全和便捷的保障。通过引入 RBAC 对于网络的角色控制机制，一个网络可以被某一组租户共享，这大大方便了组内租户间的通信，也达到了对组外租户隔离以确保安全性的目的。与此同时，RBAC 机制也提供了对传统共享网络模式的兼容，通过指定目标租户选项为“*”，该网络对象则可对数据中心所有用户可见，即相当于传统模式下的共享网络。
+Role-based Access Control (RBAC) 是一种用于定义用户角色及其权限的机制，这对于大规模网络环境的管理提供了更安全和便捷的保障。通过引入 RBAC 对于网络的角色控制机制，一个网络可以被某一组租户共享，这大大方便了组内租户间的通信，也达到了对组外租户隔离以确保安全性的目的。与此同时，RBAC 机制也提供了对传统共享网络模式的兼容，通过指定目标租户选项为“*”，该网络对象则可对数据中心所有用户可见，即相当于传统模式下的共享网络。
 
 ### 使用示例
+根据[官方命令行手册](http://docs.openstack.org/cli-reference/neutron.html) [1]，neutron rbac 相关命令使用方式有如下几种：
+```
+usage: neutron rbac-create [-h] [-f {html,json,shell,table,value,yaml}]
+                           [-c COLUMN] [--max-width <integer>] [--noindent]
+                           [--prefix PREFIX] [--request-format {json}]
+                           [--tenant-id TENANT_ID] --type {qos-policy,network}
+                           [--target-tenant TARGET_TENANT] --action
+                           {access_as_external,access_as_shared}
+                           RBAC_OBJECT
+```
+```
+usage: neutron rbac-delete [-h] [--request-format {json}] RBAC_POLICY
+```
+```
+usage: neutron rbac-list [-h] [-f {csv,html,json,table,value,yaml}]
+                         [-c COLUMN] [--max-width <integer>] [--noindent]
+                         [--quote {all,minimal,none,nonnumeric}]
+                         [--request-format {json}] [-D] [-F FIELD] [-P SIZE]
+                         [--sort-key FIELD] [--sort-dir {asc,desc}]
+```
+```
+usage: neutron rbac-show [-h] [-f {html,json,shell,table,value,yaml}]
+                         [-c COLUMN] [--max-width <integer>] [--noindent]
+                         [--prefix PREFIX] [--request-format {json}] [-D]
+                         [-F FIELD]
+                         RBAC_POLICY
+```
+```
+usage: neutron rbac-update [-h] [--request-format {json}]
+                           [--target-tenant TARGET_TENANT]
+                           RBAC_POLICY
+```
+以下就 RBAC 的实际使用及其产生的效果，做一个简单的测试：
 - 在 demo 用户下查看当前网络列表
 ```
 [root@liberty ~(keystone_demo)]# neutron net-list
@@ -155,4 +188,8 @@ Created a new port:
 
 ### 潜在问题
 - 在创建 RBAC 策略，并以目标租户名字为参数进行指定时，该 RBAC 策略可被成功创建，但目标租户并不能正常使用该网络对象资源。只有将目标租户 UUID 作为参数进行指定时，基于该 RBAC 策略才真正生效。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1585082) 已提出，需进一步讨论。
-- 目标租户选项参数默认为非必要参数，且根据[官方文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html)来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
+- 目标租户选项参数默认为非必要参数，且根据[官方文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html) [2] 来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
+
+### 参考文档
+[1] "Networking service command-line client", 可参见 http://docs.openstack.org/cli-reference/neutron.html  
+[2] "Role-based Access Control for Networks", 可参见 http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html
