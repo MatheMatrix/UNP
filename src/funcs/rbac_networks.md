@@ -18,7 +18,7 @@
 Role-based Access Control (RBAC) 是一种用于定义用户角色及其权限的机制，这对于大规模网络环境的管理提供了更安全和便捷的保障。通过引入 RBAC 对于网络的角色控制机制，一个网络可以被某一组租户共享，这大大方便了组内租户间的通信，也达到了对组外租户隔离以确保安全性的目的。与此同时，RBAC 机制也提供了对传统共享网络模式的兼容，通过指定目标租户选项为“*”，该网络对象则可对数据中心所有用户可见，即相当于传统模式下的共享网络。
 
 ### 使用示例
-根据[官方命令行手册](http://docs.openstack.org/cli-reference/neutron.html) [1]，neutron rbac 相关命令使用方式有如下几种：
+根据[社区命令行手册](http://docs.openstack.org/cli-reference/neutron.html) [1]，neutron rbac 相关命令使用方式有如下几种：
 ```
 usage: neutron rbac-create [-h] [-f {html,json,shell,table,value,yaml}]
                            [-c COLUMN] [--max-width <integer>] [--noindent]
@@ -189,7 +189,7 @@ Created a new port:
 
 ### 潜在问题
 - 在创建 RBAC 策略，并以目标租户名字为参数进行指定时，该 RBAC 策略可被成功创建，但目标租户并不能正常使用该网络对象资源。只有将目标租户 UUID 作为参数进行指定时，基于该 RBAC 策略才真正生效。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1585082) 已提出，需进一步讨论。
-- 目标租户选项参数默认为非必要参数，且根据[官方文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html) [3] 来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
+- 目标租户选项参数默认为非必要参数，且根据[社区文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html) [3] 来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
 
 ### 参考文档
 [1] "Networking service command-line client", 可参见 http://docs.openstack.org/cli-reference/neutron.html  
