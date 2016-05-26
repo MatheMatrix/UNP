@@ -64,8 +64,14 @@ VLAN 是一种将一个交换机分成多个交换机的一种方法。
 
 ## Neutron 中的 VLAN 拓扑
 
-![vlan_openstack][2]
+### 无网络节点的 VLAN 逻辑拓扑
 
+![vlan_no_network_node][3]
+
+
+### 有网络节点的 VLAN 逻辑拓扑
+
+![vlan_network_node][4]
 
 ## Neutron 对 VLAN 网络的支持
 
@@ -135,6 +141,8 @@ network_vlan_ranges = physnet3:100:200,physnet3:300:400
 
 [1]: ../../images/architecture/vlan.png
 [2]: ../../images/architecture/vlan_openstack.png
+[3]: ../../images/architecture/vlan_no_network_node.png
+[4]: ../../images/architecture/vlan_network_node.png
 
 
 
