@@ -11,7 +11,7 @@
 
 #### Overlay 网络
 
-  Overlay 在网络技术领域，指的是一种网络架构上叠加的虚拟化技术模式，
+ Overlay 在网络技术领域，指的是一种网络架构上叠加的虚拟化技术模式，
 其大体框架是对基础网路不进行大规模修改的条件下，实现应用在网络上的承载，
 并能与其他网络业务隔离，并且以基于 IP 的基础网络技术为主。Overlay 技术
 是在现有的物理网络之上构建一个虚拟网络，上层应用只与虚拟网络有关。
@@ -22,7 +22,8 @@
  - 转发平面：指承载 Overlay 报文的物理网络
 
 #### Overlay 主要技术标准和比较
-  当前主流的 Overlay 技术主要有 VXLAN，GRE/NVGRE 和 STT。这三种二层 Overlay 
+
+ 当前主流的 Overlay 技术主要有 VXLAN，GRE/NVGRE 和 STT。这三种二层 Overlay 
 技术，大体思路都是将以太网报文承载到某种隧道层面，差异性在于选择和构造隧道
 的不同，而底层均是 IP 转发。
 
@@ -89,7 +90,7 @@ VXLAN 将二层数据帧封装成 UDP 包
  
  ![HER][4]
  
- 之前版本的 Open vSwitch Driver 即使用这种方式避免组播的依赖。
+ Open vSwitch Driver 实现的 VXLAN 即使用类似这种方式避免组播的依赖。
  
  HER 在即使有控制平面的情况下依然具备价值，因为有可能有静默主机、MAC 表项老化、虚拟机需要使用组播或广播达成业务的需求。在部分厂商的文档可能描述为 Ingress Replication。
  
@@ -137,6 +138,48 @@ OVSDB 的手段类似于通过外部手段影响 VXLAN 转发，非协议原生�
 
 ![eBGP][8]
 
+#### Distributed Anycast Gateway
+
+ IETF 在 draft-ietf-bess-evpn-inter-subnet-forwarding中对在 EVPN 中属于不同的 VxLan 下如何通过 Integrated Routing and Bridging（以下简称 IRB）处理跨子网通信做了说明，换句话说，EVPN VxLan 提供了原生的基于 IRB 的分布式三层网关参考。
+ 
+ 然而 EVPN VxLan 的实际路由过程可以分成两步来谈，第一部分是虚拟机的 First-hop 的地址，即网关地址，第二部分是如何在不同 VxLan 间路由（IRB），本节会先谈网关地址的问题。
+ 
+ 目前一种实践是使用 Anycast Gateway 技术，每个 VTEP 上均配置相同的 vIP 和 vMAC，如图：
+ 
+ ![Anycast_gateway][9]
+ 
+ 这样首先每个虚拟机的网关都在最近的 VTEP 上，可以优化网络路径，其次当虚拟机发生迁移时，不会需要重新获取默认网关的 ARP。在一些厂商中，这项技术被称为 Static Anycast Gateway。
+ 
+#### Integrated Routing and Bridging
+
+ IRB 即 VTEP 提供三层和二层功能，但是对于具体如何路由，目前存在两种方法，分别为 Asymmetric IRB mode 和 Symmetric IRB mode。前者是非对称模式，后者是对称模式，对于 Asymmetric，结合 Anycast Gateway 后路径是这样的：
+ 
+ ![SIRB][10]
+
+ 报文由虚拟机发出时，目的 MAC 是网关的虚拟 MAC，VTEP-1 收到报文后查询路由找到 IP-2 对应的虚拟机，查询到对应的 VTEP 为 VTEP-2 后，封上 VxLan 的头部发到 VTEP-2，并将 VNI 设置为对方的 VNI-B，VTEP-2 收到报文后，将 VxLan 头部剥掉换成 Vlan 并发往 VM-2。
+ 
+ 当虚拟机需要回复时，路径完全反过来，即在 VTEP-2 上完成 VXLAN 封包和设置 VNI 为 VNI-A。所以这个过程是非对称的。
+ 
+ 这种实现存在一些显而易见的问题：
+ 
+ - 所有的 VTEP 必须配置上所有的 VXALN VNI，否则不同 VNI 通信会存在问题；
+ - 所有的 VTEP 必须获整个 Fabric 完整的 Host tables 信息，否则无法完成完路由。
+
+另一种实现方法是 Symmetric IRB，其实现与 Asymmetric IRB 最显著的不同是源 VTEP 和目标 VTEP 都会承担三层和二层功能，而不像 Symmetric IRB 只在源 VTEP 做路由。这样最终实现是对称的，但前提是必须引入一个新的概念即 L3 VNI。
+ 
+ 在 Symmetric IRB 中，每个租户的 VRF 会分配一个 L3 VNI，可达信息（NLDR）会在同一个 L3 VNI 下同步，这样每次路由需要将外层 VXLAN 目的地址设置为目的 VTEP 的地址，将 VNI 设置为 L3 VNI。
+ 
+ ![L3 VNI][11]
+ 
+从上面的分析可以得知，Symmetric IRB 最大的好处一是不需要所有 VTEP 均配置所有 VNI，二是不需要所有的 VTEP 知道整个 Fabric 的完整 Host tables 信息。但是，这是建立在不是最差情况的前提，如果说恰好每个租户都在每个 VTEP 下具有虚拟机，或着整个网络只有一个租户，那么网络可能产生退化。Symmetric IRB 的主要优化场景是针对多租户的。
+
+ ![L3 MultiTenancy][12]
+ 
+#### VLAN Scoping
+
+为了解决 VXLAN 的扩展性，同一个 VXLAN 在不同的 VTEP 下可以对应不同的 VLAN，目前 VXLAN 到 VLAN 映射有 Leaf 层面和 Port 层面两种实现，主流是 Leaf 层面的。
+
+![VlanScoping][13]
 
 ### Neutron Open vSwitch Driver 下的 VXLAN
 
@@ -178,8 +221,71 @@ Neutron VXLAN network 的 segmentation_id 属性即为 VXLAN 的 VNI。
 
 目前我们通过优化消息队列的性能和高可用来解决 L2 Population 加重了消息队列的使用。
 
+#### DVR
+
+为了解决 IRB 的问题，Neutron 通过软件的方法在每个计算节点实现了分布式的路由和 NAT，可以有效提高整个系统的吞吐和性能，详见 [DVR](../DVR.md)。
+
+#### Conversational Learning
+
+当然来自未知的位置报文时，Neutron 通过 OVS 的 learn 动作可以实现对流的会话学习（Conversational Learning）。在 Open vSwitch 的 br-tun 网桥上，存在一条学习规则如下：
+
+`cookie=0xbf36e76cf0946b9e, duration=16123.771s, table=10, n_packets=419, n_bytes=40096, idle_age=10442, priority=1 actions=learn(table=20,hard_timeout=300,priority=1,cookie=0xbf36e76cf0946b9e,NXM_OF_VLAN_TCI[0..11],NXM_OF_ETH_DST[]=NXM_OF_ETH_SRC[],load:0->NXM_OF_VLAN_TCI[],load:NXM_NX_TUN_ID[]->NXM_NX_TUN_ID[],output:NXM_OF_IN_PORT[]),output:1`
+
+往表 20 中添加对返程包的正常转发规则，并且从 patch-int 送到 br-int。
+
+其中 learn 内的 table=20 说明是修改表 20 中的规则，后面是添加的规则内容；
+NXM_OF_VLAN_TCI[0..11]，匹配和当前流同样的 VLan 头，其中 NXM 是 Nicira Extensible Match 的缩写；
+NXM_OF_ETH_DST[]=NXM_OF_ETH_SRC[]，包的目的 MAC 跟当前流的源 MAC 匹配；
+load:0->NXM_OF_VLAN_TCI[]，将 VLAN 号改为 0；
+load:NXM_NX_TUN_ID[]->NXM_NX_TUN_ID[]，将 Tunnel 号修改为当前的 Tunnel 号；
+output:NXM_OF_IN_PORT[]，从当前入口发出。
+
+#### Flooding VTEP
+
+社区目前还在推进外部 VTEP（Flooding VTEP）的支持，即将 OpenStack 管理的 VTEP 与外部的非 OpenStack 管理的 VTEP 混合组网，目前的设计比较弱，需要在创建网络时指定每一个外部 VTEP，这里很大一部分原因是目前 Open vSwitch Driver 实现的 VXLAN 并不能支持控制平面协议。
+
+#### Edge Replication
+
+类似于网络设备实现的 Head-End Replication，对于未知的流量，可以通过本地复制避免对组播的依赖：
+
+`cookie=0x0, duration=1322342.725s, table=22, n_packets=4, n_bytes=280, idle_age=65534, hard_age=65534, dl_vlan=17 actions=strip_vlan,set_tunnel:0x10d,output:2,output:9,output:8`
+
+#### ARP Responder
+
+在有了ARP Responder后，由于Neutron数据库中保存了网络中的所有数据，此时可以通信的虚拟机的 IP、MAC 信息可以分发到个计算节点，计算节点上本地做 ARP 代理，直接返回 ARP 请求，详见 [ARP Responder](../arp_responder.md)。
 
 #### 总结
+
+对于早期 VXLAN 协议的种种问题，厂商和 OpenStack 社区都提出了各自的解决方案，厂商的设计偏向于通过设备 + 协议，而社区的参考设计偏向于软件控制，二者各有其优点与缺点，在这里不妨将 EVPN 与 Open vSwitch Driver VXLAN 做一个对比：
+
+| EVPN 实现 | Open vSwitch Driver VXLAN 实现 |
+| -------- | ----------------- |
+| Head-End Replication | Edge Replication |
+| ARP Supression | ARP Responder |
+| MAC advertise | L2 Population |
+| Conversational Learning | Conversational Learning |
+| Asymmetric IRB mode & Anycast Gateway | DVR |
+
+目前 Open vSwitch Driver VXLAN 的短板一是消息的效率目前还没有很好的优化，二是控制平面比较集中在 Neutron Server，不能实现分布式的网络信息分发。
+
+### 性能
+
+得益于 DVR，UnitedStack<sup>®</sup> UNP 的整体吞吐可以得到很高的提高，整个系统的路由吞吐不会再限制到某几个网络节点上，而是会分散到所有计算节点，完整的测试数据、测试方法和测试指标说明参考 UnitedStack 知识库相关文章或本文档其他章节 [性能](../performance/preface.md)。这里简单介绍 DVR 与 Classic 对比的 VxLan 性能数据。
+ 
+ ![Performance][14]
+ 
+ 测试项说明如下：
+ 
+ | 编号 | 测试项 | 编号 | 测试项 |
+ |:------|:--------|:------|:------|
+ | 1 | 大包同子网跨主机 | 2 | 大包跨子网跨主机 |
+ | 3 | 大包挎网络同主机 | 4 | 大包同子网同主机 |
+ | 5 | 小包同子网跨主机 | 6 | 小包跨子网跨主机 |
+ | 7 | 小包同子网同主机 | 8 | 小包跨子网同主机 |
+ | 9 | 大包浮动 IP 跨主机 | 10 | 大包浮动 IP 同主机 |
+ | 11 | 小包浮动 IP 同主机 |
+ 
+此外，如果用户希望能获得更高的性能，也可以通过本文档的专业性能章节 [性能](../performance/preface.md) 获取更完整的性能优化建议，简单的说，推荐使用 Intel X710、Mellanox Connect-X3、Mellanox Connect-X4 等支持 VXLAN 卸载的网卡，以及使用 6Wind 加速器等产品。
 
 
 ### 参考链接
@@ -203,3 +309,9 @@ Neutron VXLAN network 的 segmentation_id 属性即为 VXLAN 的 VNI。
 [6]: ../../images/architecture/QQ20160526-2.png
 [7]: ../../images/architecture/QQ20160526-3.png
 [8]: ../../images/architecture/QQ20160526-4.png
+[9]: ../../../images/ecosystem/QQ20160525-1.png
+[10]: ../../../images/ecosystem/AsymmetricIRB.png
+[11]: ../../../images/ecosystem/QQ20160525-5.png
+[12]: ../../../images/ecosystem/QQ20160525-4.png
+[13]: ../../images/architecture/QQ20160526-5.png
+[14]: ../../images/architecture/DVR_CLA_Performance.png
