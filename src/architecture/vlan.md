@@ -1,18 +1,18 @@
-# Vlan
+## Vlan
 
 ----
 
-## UnitedStack 知识库相关文章
+### UnitedStack 知识库相关文章
 
  - [UnitedStack Vlan 网络方案说明](https://confluence.ustack.com/download/attachments/3642944/UnitedStack%20Vlan%20%E7%BD%91%E7%BB%9C%E6%96%B9%E6%A1%88%E8%AF%B4%E6%98%8E.pdf?version=1&modificationDate=1448375766440&api=v2)
  - [关于基础网络（与 Vlan 网络）、策略路由](https://confluence.ustack.com/pages/viewpage.action?pageId=9642682)
 
-## 数据链路层 ( L2 ) 基础知识
+### 数据链路层 ( L2 ) 基础知识
 
  数据链路层 ( Data Link Layer ) 是 [OSI 参考模型](https://zh.wikipedia.org/wiki/OSI%E6%A8%A1%E5%9E%8B)第二层，
 位于物理层和网络层之间。主要功能是提供在两个网络实体之间提供数据链路连接的创建、维持和释放管理。 
 
-### VLAN 基础知识
+#### VLAN 基础知识
 
  LAN 表示 Local Area Network，本地局域网，通常使用 Hub 和 Switch 来连接 LAN 中的计算机。
 一个 LAN 表示一个广播域，它的意思是 LAN 中的所有成员都会收到 LAN 中一个成员发出的广播包。
@@ -29,7 +29,7 @@ VLAN 是一种将一个交换机分成多个交换机的一种方法。
 
  ![vlan][1]
 
-### VLAN 类型
+#### VLAN 类型
 
  - 基于端口的 VLAN （untagged VLAN）
  这种模式中，在交换机上创建若干个 VLAN，在将若干端口放在每个 VLAN 中。每个端口在某一时刻
@@ -44,7 +44,7 @@ VLAN 是一种将一个交换机分成多个交换机的一种方法。
  交换机的所有端口，部分是 tagged port，部分被添加到 VLAN 中。一个 untagged port ，一个时刻
 只能在一个 VLAN 中，一个 tagged port 可以是多个 VLAN 的成员。
 
-### 交换机端口类型
+#### 交换机端口类型
 
  以太网端口有三种链路类型：
 
@@ -55,27 +55,27 @@ VLAN 是一种将一个交换机分成多个交换机的一种方法。
 的报文发送时不打标签，而 Trunk 端口只允许缺省 VLAN 的报文发送时不打标签。
 
 
-### VLAN 的不足
+#### VLAN 的不足
 
 - VLAN 使用 12-bit 的 VLAN ID，因此第一个不足之处就是最多只支持 4096 个 VLAN 网络
 - VLAN 是基于 L2 的，因此很难跨越 L2 的边界，限制了网络的灵活性
 - VLAN 的配置需手动介入较多
 
 
-## Neutron 中的 VLAN 拓扑
+### Neutron 中的 VLAN 拓扑
 
-### 无网络节点的 VLAN 逻辑拓扑
+#### 无网络节点的 VLAN 逻辑拓扑
 
 ![vlan_no_network_node][3]
 
 
-### 有网络节点的 VLAN 逻辑拓扑
+#### 有网络节点的 VLAN 逻辑拓扑
 
 ![vlan_network_node][4]
 
-## Neutron 对 VLAN 网络的支持
+### Neutron 对 VLAN 网络的支持
 
-### VLAN 池化
+#### VLAN 池化
 
   Neutron 支持预先定义一段或者多段 VLAN 范围，从而将 VLAN *池化*，最终直接创建 VLAN 网络。
 具体的做法是，预先在 OpenStack 物理环境中配置相应的 VLAN 范围，在验证相应 VLAN 创建成功
@@ -109,7 +109,7 @@ network_vlan_ranges = physnet3:100:200,physnet3:300:400
 通过设置 Neutron Server 中的 `tenant_network_types` 参数为 `vlan`，使得租户默认创建的网络
 类型为 VLAN 网络，具体的 VLAN ID 会从定义的 VLAN 范围中轮询获得。也可通过指定 VLAN ID 创建网络。
 
-### 预定义 VLAN 网络
+#### 预定义 VLAN 网络
   
  Neutron 同样支持通过预创建 VLAN 网络来对外提供服务。具体定义 VLAN 的方式和`支持 VLAN 池化` 中提到
 的方式大体一致。需要指出的是，由于是预定义 VLAN 网络，OpenStack 管理员需要知道所有 VLAN 网络的 VLAN ID
@@ -117,7 +117,7 @@ network_vlan_ranges = physnet3:100:200,physnet3:300:400
 网络，可参考 [Neutron 中的 RBAC](../funcs/rbac_networks.md)一节。
 
 
-### 总结
+#### 总结
 
  无论是哪种 VLAN 网络模式，都可以配合使用网络节点，或者单独使用（不使用网络节点）。
 下面详细介绍这两种情况：
