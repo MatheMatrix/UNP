@@ -27,7 +27,10 @@
 * 高级服务
 * [生态系统](src/ecosystem/preface.md)
    * [技术重点](src/ecosystem/technical_concerns.md)
-       * [二层隔离网络实现](src/ecosystem/techniacl_concerns/l2_implementation.md)
-       * [虚拟路由器实现](src/ecosystem/techniacl_concerns/virtual_router.md)
+       * [二层隔离网络实现](src/ecosystem/technical_concerns/l2_implementation.md)
+       * [虚拟路由器实现](src/ecosystem/technical_concerns/virtual_router.md)
+       * [社区 API 支持](src/ecosystem/technical_concerns/community_api.md)
+       * [集成方法](src/ecosystem/techniacl_concerns/integration.md)
+       * [其他](src/ecosystem/techniacl_concerns/others.md)
 * 系统
 * 用户使用场景
