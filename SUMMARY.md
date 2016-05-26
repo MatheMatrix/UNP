@@ -8,6 +8,7 @@
    * [ARP Responder](src/architecture/arp_responder.md)
    * [VxLan](src/architecture/vxlan.md)
    * [Vlan](src/architecture/vlan.md)
+   * [External Network](src/architecture/external_network.md)
    * [SRIOV](src/architecture/sriov.md)
 * [功能](src/funcs/preface.md)
    * [RBAC Networks](src/funcs/rbac_networks.md)
