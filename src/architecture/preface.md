@@ -8,6 +8,7 @@
  - 服务器角色和数量规划
  - 高级服务的开启和使用
  - 第三方集成的使用
+ - 外部网络的使用
  - ……
 
 然而以上内容会在 [部署](../deploy/preface.md)、[高级服务](../advanced_services/preface)、[生态](../3rd_party/preface.md) 等节讨论，本节讨论的核心问题是 Open vSwitch Driver 实现下的虚拟网络架构。所以以下内容中指代的 UNP 架构均指 Open vSwitch Driver 架构下的虚拟网络架构。

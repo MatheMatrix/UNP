@@ -14,7 +14,7 @@ Neutron 允许创建多个 External Networks。
 ### External Network 的工作原理
 
  External Network 中的 IP 地址通过 [NAT](https://en.wikipedia.org/wiki/Network_address_translation)
-的形式和虚拟 IP 建立一对一（FloatingIP）或者一对多(SNAT)的映射关系，从而对外提供服务。
+的形式和虚拟 IP 建立一对一（FloatingIP）或者一对多（SNAT）的映射关系，从而对外提供服务。
 
 ### 不同类型的 External Networks
 
@@ -97,6 +97,14 @@ Created a new network:
 本拓扑中的 OpenvSiwtch 网桥 br-vlan 既可作为SDN 网络流量的网桥，也可作为外部网桥。
 将 SDN 网络流量和外部网络流量公用一个 OpenvSwitch
 网桥最大的好处就是节约了网卡和相关物理资源。
+
+
+#### 比较两种类型的 External Network
+
+|| OVS 网桥 |外部网络网卡| 交换机端口配置 |物理网卡速率|虚拟网关所在网桥|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+|Local 类型|单独的 OVS 网桥 - br-ex|单独的外网网卡|Access|一般是千兆|br-ex|
+|VLAN 类型|和 VLAN 网桥共用 OVS 网桥 - br-vlan|共用的 VLAN 网络网卡|Trunk|万兆|br-vlan|
 
 
  有关 External Network 的具体配置和部署过程请参考[部署 - External Network](../deployment/external_network.md)。
