@@ -28,7 +28,9 @@ UnitedStack<sup>®</sup> UNP 的架构可以从四方面阐述：
  - 默认使用 Pacemaker 解决 Liberty 版本 DVR 的 SNAT 路由器高可用问题；
  - 同时允许创建高可用路由器，解决 DVR 下部分 VIP 类应用受影响的问题；
  - 默认打开 L2 Population + ARP Responder，配合 DVR 使用和提升网络有效连接数；
- - 默认使用 VxLan 租户网络，提升网络扩展性、解决 Vlan 网络 4096 限制。
+ - 默认使用 VxLan 租户网络，提升网络扩展性、解决 Vlan 网络 4096 限制；
+ - 允许用户创建池化的 Vlan 租户网络，便于提供高性能的或用于企业内网互通；
+ - 在界面上默认不允许指定 Vlan ID，只有少数网管场景专门允许指定 Vlan ID。
 
 对应的配置方法参考 [部署-配置文件-默认推荐配置](../deploy/config/default.md)，具体的架构原理和实现意义参考本节内的文档。
 
