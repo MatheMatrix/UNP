@@ -106,6 +106,9 @@ Created a new network:
 |Local 类型|单独的 OVS 网桥 - br-ex|单独的外网网卡|Access|一般是千兆|br-ex|
 |VLAN 类型|和 VLAN 网桥共用 OVS 网桥 - br-vlan|共用的 VLAN 网络网卡|Trunk|万兆|br-vlan|
 
+因此，我们推荐的是基于 br-vlan 这种模式的外部网络。这种模式的优点是和 SDN 网络共用万兆网卡
+从而节约网络资源、方便网卡多队列性能的提升、并且节省硬件网络成本。
+
 
  有关 External Network 的具体配置和部署过程请参考[部署 - External Network](../deployment/external_network.md)。
 

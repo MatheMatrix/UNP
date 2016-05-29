@@ -8,7 +8,6 @@
  - 服务器角色和数量规划
  - 高级服务的开启和使用
  - 第三方集成的使用
- - 外部网络的使用
  - ……
 
 然而以上内容会在 [部署](../deploy/preface.md)、[高级服务](../advanced_services/preface)、[生态](../3rd_party/preface.md) 等节讨论，本节讨论的核心问题是 Open vSwitch Driver 实现下的虚拟网络架构。所以以下内容中指代的 UNP 架构均指 Open vSwitch Driver 架构下的虚拟网络架构。
@@ -32,6 +31,7 @@ UnitedStack<sup>®</sup> UNP 的架构可以从四方面阐述：
  - 默认使用 VxLan 租户网络，提升网络扩展性、解决 Vlan 网络 4096 限制；
  - 允许用户创建池化的 Vlan 租户网络，便于提供高性能的或用于企业内网互通；
  - 在界面上默认不允许指定 Vlan ID，只有少数网管场景专门允许指定 Vlan ID。
+ - 默认将外部网络和 SDN 网络共有万兆网卡，提升网络性能，节约硬件网络资源。
 
 对应的配置方法参考 [部署-配置文件-默认推荐配置](../deploy/config/default.md)，具体的架构原理和实现意义参考本节内的文档。
 
