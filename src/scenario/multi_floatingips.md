@@ -14,6 +14,8 @@
 
   这里以添加了双网卡的 Ubuntu 15.05 虚拟机为例，详细讲解多网卡下如何配置路由。
 
+#### 逻辑拓扑和需求
+
   拓扑结构如下：
 
   ![multi_fips][1]
@@ -24,6 +26,8 @@
   具体需求如下：
 - 虚拟机默认连接 Internet
 - 访问 30.30.30.0/24 时通过 eth1 访问
+
+#### 详细配置步骤
 
   实验虚拟机的所有网卡信息，和路由信息如下：
 
@@ -89,11 +93,27 @@ root@ubuntu:~# ip rule list
 32765:	from 20.20.20.16 lookup internal_network
 32766:	from all lookup main
 32767:	from all lookup default
-root@ubuntu:~# ip rule show^C
 root@ubuntu:~# ip route show table internal_network
 default via 20.20.20.1 dev eth1
 30.30.30.0/24 dev eth1  scope link  src 20.20.20.16
 ```
 
+#### 使配置永久生效
+
+  在 Linux 命令行上进行了上述配置后，当虚拟机重启或者重新 DHCP 后配置可能会消失，为了使配置永久生效，
+因此需要手动修改配置文件，添加上述配置的默认路由和高级路由的配置信息。
+
+  在 `/etc/network/interfaces` 添加如下内容即可：
+```
+auto eth0
+iface eth0 inet dhcp
+    post-up ip route change default via 10.10.10.1
+
+auto eth1
+iface eth1 inet dhcp
+    post-up ip route add 30.30.30.0/24 dev eth1 src 20.20.20.16 table 20
+    post-up ip route add default via 20.20.20.1 table 20
+    post-up ip rule add from 20.20.20.16/32 table 20
+```
 
 [1]: ../../images/scenario/multi_fips.png
