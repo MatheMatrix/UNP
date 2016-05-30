@@ -28,7 +28,7 @@
   实验虚拟机的所有网卡信息，和路由信息如下：
 
 ```
-root@ooo:~# ip a
+root@ubuntu:~# ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -47,7 +47,7 @@ root@ooo:~# ip a
        valid_lft forever preferred_lft forever
     inet6 fe80::f816:3eff:fe7b:852d/64 scope link
        valid_lft forever preferred_lft forever
-root@ooo:~# ip route
+root@ubuntu:~# ip route
 default via 20.20.20.1 dev eth1
 10.10.10.0/24 dev eth0  proto kernel  scope link  src 10.10.10.29
 20.20.20.0/24 dev eth1  proto kernel  scope link  src 20.20.20.16
@@ -61,21 +61,39 @@ default via 20.20.20.1 dev eth1
 ip route change default via 10.10.10.1
 ```
 
-对于需求2 来说，需要通过 Linux 的静态路由实现，只需添加：
+在 Linux 系统中，每块网卡都可以拥有自己的默认网关，该网关地址一般通过网卡在 DHCP 时由 DHCP Server 推送得到，
+因此在 Linux 系统中就会出现抢占默认网关地址的问题。但是 Linux 系统只能有一个默认的网关，不同的网关需要不同的路由表来隔离。
+因此，对于需求2 来说，需要通过 Linux 的高级路由实现，添加新的路由表来实现：
 
 ```
-ip route add 30.30.30.0/24 dev eth1 src 20.20.20.16
+echo "20 internal" >> /etc/iproute2/rt_tables
 ```
 
-添加静态路由后的完整路由信息如下：
+在新的路由表 20 中添加路由信息和默认路由：
+```
+ip route add 30.30.30.0/24 dev eth1 src 20.20.20.16/24 table 20
+ip route add default via 20.20.20.1 table 20
+```
+
+添加新的路由规则:
+```
+ip rule from 20.20.20.16/32 table 20
+```
+
+添加上述高级路由后的完整路由信息如下：
 
 ```
-root@ubuntu:~# ip route
-default via 10.10.10.1 dev eth0
-10.10.10.0/24 dev eth0  proto kernel  scope link  src 10.10.10.29
-20.20.20.0/24 dev eth1  proto kernel  scope link  src 20.20.20.16
+root@ubuntu:~# ip rule add from 20.20.20.16/32 table 20
+root@ubuntu:~# ip rule list
+0:	from all lookup local
+32765:	from 20.20.20.16 lookup internal_network
+32766:	from all lookup main
+32767:	from all lookup default
+root@ubuntu:~# ip rule show^C
+root@ubuntu:~# ip route show table internal_network
+default via 20.20.20.1 dev eth1
 30.30.30.0/24 dev eth1  scope link  src 20.20.20.16
-169.254.169.254 via 10.10.10.1 dev eth0
 ```
+
 
 [1]: ../../images/scenario/multi_fips.png
