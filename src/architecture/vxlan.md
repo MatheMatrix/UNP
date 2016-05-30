@@ -1,4 +1,4 @@
-## VxLan
+## VXLAN
 
 ---
 
@@ -181,6 +181,14 @@ OVSDB 的手段类似于通过外部手段影响 VXLAN 转发，非协议原生�
 
 ![VlanScoping][13]
 
+这样从 Leaf 到服务器是 Vlan，而 Leaf 到 Spine 之间为 VXLAN，保证网络扩展性的同时降低服务器端的负载。
+
+#### vPC/vLAG
+
+为了解决 Leaf 的高可用问题，厂商均实现了类似 vPC 或 vLAG 的技术，一对 vPC peer 共享一个 VTEP 地址（anycast VTEP address），组成一个逻辑上的 VTEP，共同分担负载。但是实际上对于 EVPN，每个设备上的 Route ID 都是不同的，独立的广播 BGP 路由。
+
+![vPC][15]
+
 ### Neutron Open vSwitch Driver 下的 VXLAN
 
  Neutron 通过 OpenvSwitch （以下简称 OVS）支持 VXLAN。OVS 在计算节点/网路节点的 br-tun 上建立多个 tunnel port，和其他节点的 tunnel port 之间建立点对点的 VXLAN Tunnel。 Tunnel Port 在 OVS 上的形式如下：
@@ -254,6 +262,22 @@ output:NXM_OF_IN_PORT[]，从当前入口发出。
 
 在有了ARP Responder后，由于Neutron数据库中保存了网络中的所有数据，此时可以通信的虚拟机的 IP、MAC 信息可以分发到个计算节点，计算节点上本地做 ARP 代理，直接返回 ARP 请求，详见 [ARP Responder](../arp_responder.md)。
 
+#### Bonding
+
+对于 Linux，可以将多个物理网卡绑定为一个虚拟网卡，具体可以通过 bonding 或者 team 实现，目前我们推荐使用 Bonding 更为成熟一些。Team 的优势主要在于用户态工具的支持，对性能没有明显提升。在没有做任何针对性的性能优化下，只做链路的测试数据如下：
+
+|	Interface	|	Performance with 64byte packets	|	Performance with   1KB packets	|	Performance with 64KB packets	|	Average Latency	|
+| ---- | ---- | ---- | ---- | ---- |
+|	eth0	|	1664.00Mb/s (27.48%CPU)	|	8053.53Mb/s (30.71%CPU)	|	9414.99Mb/s (17.08%CPU)	|	54.7usec	|
+|	eth1	|	1577.44Mb/s (26.91%CPU)	|	7728.04Mb/s (32.23%CPU)	|	9329.05Mb/s (19.38%CPU)	|	49.3usec	|
+|	bonded (eth0+eth1)	|	1510.13Mb/s (27.65%CPU)	|	7277.48Mb/s (30.07%CPU)	|	9414.97Mb/s (15.62%CPU)	|	55.5usec	|
+|	teamed (eth0+eth1)	|	1550.15Mb/s (26.81%CPU)	|	7435.76Mb/s (29.56%CPU)	|	9413.8Mb/s (17.63%CPU)	|	55.5usec	|
+
+
+Bonding 支持 7 种模式的链路绑定，目前我们推荐使用的是 mode 4（802.3ad），与交换机 LACP 相配合使用，交换机一般支持静态聚合模式和动态聚合模式两种方式，前者通常认为比较稳定，我们也较为推荐使用静态绑定。
+
+配置后可以通过 /proc/net/bonding/ 来查看链路绑定状态。
+
 #### 总结
 
 对于早期 VXLAN 协议的种种问题，厂商和 OpenStack 社区都提出了各自的解决方案，厂商的设计偏向于通过设备 + 协议，而社区的参考设计偏向于软件控制，二者各有其优点与缺点，在这里不妨将 EVPN 与 Open vSwitch Driver VXLAN 做一个对比：
@@ -265,8 +289,9 @@ output:NXM_OF_IN_PORT[]，从当前入口发出。
 | MAC advertise | L2 Population |
 | Conversational Learning | Conversational Learning |
 | Asymmetric IRB mode & Anycast Gateway | DVR |
+| vPC/vLAG | Bonding/Teaming |
 
-目前 Open vSwitch Driver VXLAN 的短板一是消息的效率目前还没有很好的优化，二是控制平面比较集中在 Neutron Server，不能实现分布式的网络信息分发。
+目前 Open vSwitch Driver VXLAN 的短板一是消息的效率目前还没有很好的优化，二是控制平面比较集中在 Neutron Server，不能实现完全分布式的网络信息分发。
 
 ### 性能
 
@@ -274,7 +299,7 @@ output:NXM_OF_IN_PORT[]，从当前入口发出。
  
  ![Performance][14]
  
- 测试项说明如下：
+ 测试项说明如下（其中大包为 1500 字节，小包为 64 字节）：
  
  | 编号 | 测试项 | 编号 | 测试项 |
  | ------ | -------- | ------ | ------ |
@@ -285,7 +310,25 @@ output:NXM_OF_IN_PORT[]，从当前入口发出。
  | 9 | 大包浮动 IP 跨主机 | 10 | 大包浮动 IP 同主机 |
  | 11 | 小包浮动 IP 同主机 | - | - |
  
-此外，如果用户希望能获得更高的性能，也可以通过本文档的专业性能章节 [性能](../performance/preface.md) 获取更完整的性能优化建议，简单的说，推荐使用 Intel X710、Mellanox Connect-X3、Mellanox Connect-X4 等支持 VXLAN 卸载的网卡，以及使用 6Wind 加速器等产品。
+此外，如果用户希望能获得更高的性能，也可以通过本文档的专业性能章节 [性能](../performance/preface.md) 获取更完整的性能优化建议，简单的说，推荐使用 Intel X710、Mellanox Connect-X3、Mellanox Connect-X4 等支持 VXLAN 卸载的网卡，以及使用 6Wind 加速器等产品，会对跨节点网络性能带来很明显的提升。
+
+### 部署
+
+主要的配置文件涉及 /etc/neutron/plugins/ml2/ml2_conf.ini，最基本的配置项类似如下：
+
+```
+[ml2]
+tenant_network_types = vxlan, ……
+type_drivers = vxlan, ……
+mechanism_drivers = openvswitch, l2pop, ……
+
+[ml2_type_vxlan]
+……
+vni_ranges = 200:14000
+……
+```
+
+具体的完整部署参考 [部署](../deployments/preface.md)。
 
 
 ### 参考链接
@@ -309,9 +352,10 @@ output:NXM_OF_IN_PORT[]，从当前入口发出。
 [6]: ../../images/architecture/QQ20160526-2.png
 [7]: ../../images/architecture/QQ20160526-3.png
 [8]: ../../images/architecture/QQ20160526-4.png
-[9]: ../../../images/ecosystem/QQ20160525-1.png
-[10]: ../../../images/ecosystem/AsymmetricIRB.png
-[11]: ../../../images/ecosystem/QQ20160525-5.png
-[12]: ../../../images/ecosystem/QQ20160525-4.png
+[9]: ../../images/ecosystem/QQ20160525-1.png
+[10]: ../../images/ecosystem/AsymmetricIRB.png
+[11]: ../../images/ecosystem/QQ20160525-5.png
+[12]: ../../images/ecosystem/QQ20160525-4.png
 [13]: ../../images/architecture/QQ20160526-5.png
 [14]: ../../images/architecture/DVR_CLA_Performance.png
+[15]: ../../images/architecture/white-paper-c11-732453_18.jpg

@@ -6,14 +6,15 @@
    * [DVR](src/architecture/dvr.md)
    * [L3 HA](src/architecture/l3_ha.md)
    * [ARP Responder](src/architecture/arp_responder.md)
-   * [VxLan](src/architecture/vxlan.md)
+   * [VXLAN](src/architecture/vxlan.md)
    * [Vlan](src/architecture/vlan.md)
    * [SRIOV](src/architecture/sriov.md)
 * [功能](src/funcs/preface.md)
    * [RBAC Networks](src/funcs/rbac_networks.md)
 * 提升
-* 部署
+* [部署](deployment/preface.md)
    * [Neutron 配置](neutron_conf.md)
+   * [UnitedStack 远程支持接入](deployment/remote_support.md)
 * [性能](src/performance/preface.md)
    * [DVR场景下虚拟机的性能](src/performance/dvr.md)
    * [HA场景下虚拟机的性能](src/performance/ha.md)
