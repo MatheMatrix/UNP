@@ -4,7 +4,9 @@
 
 LBaaS 是 Neutron 中的高级服务，使用户通过 Neutron 的 API 完成云平台的负载均衡需求。
 在设计之初就考虑到了数据模型与Driver 实现的解耦， OpenStack Operator 能够指定不同的后端
-(HAProxy, Octavia, F5，Citrix 等)，这样能够用统一的接口操作和控制不同的负载均衡设备。
+(HAProxy, Octavia)，UnitedStack(R) UNP 通过和合作伙伴努力，还添加了
+F5 BIG-IP (TM)的后端，此外 BIHG-IP VE (TM) 版和 Citrix NetScaler(TM) 也正在开发中，
+这样能够用统一的接口操作和控制不同的负载均衡设备。
 
 ## 架构
 
@@ -54,8 +56,13 @@ service_plugins = exist plugin, neutron_lbaas.services.loadbalancer.plugin.LoadB
 # neutron_lbaas.conf
 
 service_provider=LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
-
 ```
+
+默认的 Driver 是 HAProxy，基于社区传统的 namespace，是 Liberty Release 最可用的
+开源方案。这种方案的优点是完全开源软件实现，不依赖外部特定的硬件或 Service VM，缺点是隔离性不好，
+只隔离了单独的网络协议栈，没有对其在网络节点上的资源占用进行隔离；其次是性能一般，跟
+硬件方案或 Service VM 方案有一定差距。关于高性能负载均衡设备，请参考[生态](../ecosystem)
+相关章节
 
 ### Neutron LBaaS Agent
 
