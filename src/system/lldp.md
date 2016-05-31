@@ -44,13 +44,20 @@ http://download.opensuse.org/repositories/home:/vbernat/CentOS_7/x86_64/
 
 ### 开启服务
 
+#### 交换机
+
+在交换机上开启 lldp，不同厂商的方法可能有所不同，需要查询相应的操作手册
+
+#### 服务器
+
 ```
 systemctl restart lldpd
 ```
 
 ## 查询结果
 
-lldp 开启后，能看到与其邻接的设备信息，使用 lldpctl 命令查看，例：
+lldp 开启后，能看到与其邻接的设备信息。在交换机上，根据相应的手册来查看 lldp 信息；
+在服务器上，使用 lldpctl 命令查看，例：
 
 ```
 # lldpctl
