@@ -106,3 +106,47 @@ Ping 正常则表示 VLAN 1002 配置正确。
 ```
 ip link delete eth1.1002
 ```
+
+#### 配置 Neutron 相关参数
+
+本节中，讲解 VXLAN + VLAN 自服务模型下 Neutron 的详细配置。
+`注：本节中使用到的 VLAN 范围是 10 ~ 20`
+
+首先，Neutron 默认创建 VXLAN 网络。对 plugins/ml2/ml2_conf.ini 文件（以下若无特殊说明，文件的根目录均已 /etc/neutron 开头）进行如下修改：
+
+```
+tenant_network_types = vxlan
+```
+
+其次，指定 VLAN 池化范围。对 plugins/ml2/ml2_conf.ini 进行如下修改：
+
+```
+[ml2_type_vlan]
+# (ListOpt) List of <physical_network>[:<vlan_min>:<vlan_max>] tuples
+# specifying physical_network names usable for VLAN provider and
+# tenant networks, as well as ranges of VLAN tags on each
+# physical_network available for allocation as tenant networks.
+#
+# network_vlan_ranges =
+network_vlan_ranges = physnet3:10:20
+```
+
+上述配置支持多段不连续 VLAN 范围，比如：
+```
+network_vlan_ranges = physnet3:10:20,physnet4:30:40
+```
+
+其次，指定创建的外部网络为 VLAN 网络。对 plugins/ml2/ml2_conf.ini 进行如下修改：
+```
+external_network_type = vlan
+```
+
+最后，在计算节点和网络节点上配置网桥对应关系。对 plugins/ml2/openvswitch_agent.ini 进行如下修改：
+```
+bridge_mappings = physnet3:br-vlan
+```
+
+上述配置支持多组对应关系，比如：
+```
+bridge_mappings = physnet3:br-vlan,physnet4:br-vlan
+```
