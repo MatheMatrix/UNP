@@ -16,6 +16,7 @@
 * [部署](deployment/preface.md)
    * [Neutron 配置](neutron_conf.md)
    * [UnitedStack 远程支持接入](deployment/remote_support.md)
+   * [VLAN 网络部署](src/deployment/vlan_deployment.md)
 * [性能](src/performance/preface.md)
    * [DVR场景下虚拟机的性能](src/performance/dvr.md)
    * [HA场景下虚拟机的性能](src/performance/ha.md)
