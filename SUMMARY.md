@@ -36,5 +36,6 @@
        * [集成方法](src/ecosystem/technical_concerns/integration.md)
        * [其他](src/ecosystem/technical_concerns/others.md)
 * 系统
-* 用户使用场景
+* [用户典型使用场景](src/scenario/preface.md)
+   * [虚拟机多 FloatingIP 使用](src/scenario/multi_floatingips.md)
 
