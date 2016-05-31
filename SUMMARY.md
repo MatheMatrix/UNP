@@ -13,9 +13,9 @@
 * [功能](src/funcs/preface.md)
    * [RBAC Networks](src/funcs/rbac_networks.md)
 * 提升
-* [部署](deployment/preface.md)
-   * [Neutron 配置](neutron_conf.md)
-   * [UnitedStack 远程支持接入](deployment/remote_support.md)
+* [部署](src/deployment/preface.md)
+   * [Neutron 配置](src/deployment/neutron_conf.md)
+   * [UnitedStack 远程支持接入](src/deployment/remote_support.md)
 * [性能](src/performance/preface.md)
    * [DVR场景下虚拟机的性能](src/performance/dvr.md)
    * [HA场景下虚拟机的性能](src/performance/ha.md)
