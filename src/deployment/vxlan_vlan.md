@@ -100,3 +100,9 @@ PING 2.2.2.10 (2.2.2.10) 56(84) bytes of data.
 ```
 
 Ping 正常则表示 VLAN 1002 配置正确。
+
+在测试完毕后，一定要删除上述创建的 VLAN 接口：
+
+```
+ip link delete eth1.1002
+```
