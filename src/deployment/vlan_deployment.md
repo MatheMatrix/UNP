@@ -1,4 +1,4 @@
-## VLAN 网络部署
+## VLAN 预配置网络部署
 
 ---
 
@@ -7,7 +7,7 @@
  在[架构- VLAN](../architecture/vlan.md)一节中已经详细介绍了UnitedStack<sup>®</sup> United Networking Platform(UNP) 中
 VLAN 的相关背景和使用场景。本节详细介绍 VLAN 网络的部署步骤。
 
-#### VLAN 网络部署步骤
+#### VLAN 预配置网络部署步骤
 
 `注：本节中我们配置 VLAN 的范围是5 ~ 6 。`
 
