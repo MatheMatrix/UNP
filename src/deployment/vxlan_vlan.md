@@ -25,6 +25,11 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 
 #### 推荐的网络适配器型号
 
+|类别|品牌|型号|产品链接|备注|
+|:-:|:-:|:-:|:-:|:-:|
+|万兆网络适配器|Intel|Intel Ethernet Converged Network Adapter X710-DA2 & X710-DA4FH|[链接](http://www.intel.com/content/www/us/en/ethernet-products/converged-network-adapters/ethernet-xl710-brief.html)|- 支持网络虚拟化 Offload - 支持 DPDK - 出色的小包性能（用于NFV场景）- 优化 NAS (SMB, NFS) and SAN (iSCSI)|
+|万兆网络适配器|Intel|Intel Ethernet Converged Network Adapter X550|[链接](http://www.intel.com/content/www/us/en/ethernet-products/converged-network-adapters/ethernet-x550-brief.html)|- Low cost, low power, 10 GbE performance for the entire datacenter. - Standard CAT 6a cabling with RJ45 connectors. - Supports NBASE-T technology - PCI Express\* (PCIe\*) v 3.0 with up to 8.0 GT/s|
+
 #### 各个设备的网络适配器信息
 
 |设备角色|千兆网络适配器|万兆网络适配器|Bonding|
@@ -38,11 +43,12 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 
 |类别|品牌|型号|是否兼容|
 |:-:|:-:|:-:|:-:|
-|万兆网络适配器|Intel|Intel Corporation Ethernet 10G 2P X520 Adapter (rev 01)|兼容|
+|万兆网络适配器|Intel|Intel Corporation Ethernet 10G 2P X520 Adapter|兼容|
+|万兆网络适配器|Intel|Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection|兼容|
 |万兆网络适配器|Intel|Intel Corporation Ethernet Controller 10-Gigabit X540-AT2 (rev 01)|兼容|
-|万兆网络适配器|Intel|Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)|兼容|
 |万兆网络适配器|Intel|Intel(R) 10G 2P X540-t Adapter|兼容|
-|万兆网络适配器|Intel|Intel Corporation Ethernet Controller 10-Gigabit X540-AT2 (rev 01)|兼容|
+|千兆网络适配器|Intel|Intel Corporation I350 Gigabit Network Connection|兼容|
+|千兆网络适配器|Broadcom|Broadcom Corporation NetXtreme BCM5720 Gigabit Ethernet PCIe|兼容|
 
 #### VLAN 规划
 
