@@ -35,6 +35,14 @@ BCF 是由一套基于 Spine-Leaf 的网络拓扑架构组成的，并且此架�
 ### 集成
 BCF 与 OpenStack 的集成难度相对较低，只需在 OpenStack 控制节点安装 Big Switch OpenStack Installer (BOSI)，并根据需要修改 BOSI 目录下的部署配置文件，通过运行 BOSI 脚本，就可实现与 OpenStack 的集成，以及在各节点中用以提供三层路由功能的 Switch Light Virtual 安装。
 
+## 主要特性
+- 集中式控制器管理，降低管理复杂度：可通过基于网页的图形界面、传统的命令行交互甚至 REST API 的控制器 来进行对于网络设备的统一配置、自动化以及问题定位。
+- 通过单一的可编程接口，BCF 控制器可实现和 OpenStack 的无缝集成。
+- BCF 控制器与 Neutron 数据库周期性的同步，确保控制器中的配置与 Neutron 数据库达成一致。
+- 支持分布式三层路由以及分布式 NAT (Floating IP & PAT)：传统中的 OVS 虚拟网桥被替换为 IVS 虚拟网桥，并由 BCF 控制器进行管理；计算节点上的虚拟机可通过 Floating IP 由本节点直接访问至外网 (Internet)，无需再经过网络节点。
+- 强化的 test path 功能，可对数据包流向进行全方位（VM - vLeaf - Leaf - Spine - Leaf - vLeaf - VM）分析，使得网络问题的定位分析变得更加方便快捷。
+- 控制平面与转发平面的分离，使得即使在 BCF 控制器不可达的情况下，已经部署和配置好的服务得以继续进行。
+
 ## 参考文档
 [1] Big Cloud Fabric 3.5.0 User Guide  
 [2] Big Cloud Fabric 3.5 Datasheet, 可参见 http://go.bigswitch.com/rs/974-WXR-561/images/0627-47BL_BigSwitch_BCF_3.5_DS_WEB.pdf?_ga=1.70209688.965085565.1456297903  
