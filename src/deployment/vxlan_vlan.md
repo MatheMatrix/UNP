@@ -148,7 +148,7 @@ external_network_type = vlan
 
 最后，在计算节点和网络节点上配置网桥对应关系。对 plugins/ml2/openvswitch_agent.ini 进行如下修改：
 ```
-bridge_mappings = physnet3:br-vlan
+bridge_mappings = physnet3:ovsbr3
 ```
 
 有关 VXLAN / VLAN 架构细节可参看本书的[VXLAN](../architecture/vxlan.md)一节和 [VLAN](../architecture/vlan.md)一节。
