@@ -122,7 +122,7 @@ VXLAN 将二层数据帧封装成 UDP 包
  
 #### MPBGP EVPN VXLAN
 
-OVSDB 的手段类似于通过外部手段影响 VXLAN 转发，非协议原生的实现，IETF 撰写了 RFC 7432，描述了使用 BGP 作为 VXLAN 的控制平面的参考设计。通过 EVPN，MAC 的学习将类似于三层网络陆游的学习，将有助于有效减少泛洪。
+OVSDB 的手段类似于通过外部手段影响 VXLAN 转发，非协议原生的实现，IETF 撰写了 RFC 7432，描述了使用 BGP 作为 VXLAN 的控制平面的参考设计。通过 EVPN，MAC 的学习将类似于三层网络路由的学习，将有助于有效减少泛洪。
 
 ![evpn][6]
 
