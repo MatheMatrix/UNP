@@ -3,6 +3,10 @@
 
 ## 概述
 
+### UnitedStack 知识库相关文章
+- [BigSwitch 调研](https://confluence.ustack.com/pages/viewpage.action?pageId=12780452)
+- [UnitedStack有云联合Big Switch、戴尔推出全新云网络解决方案](https://www.ustack.com/news/unitedstackbig-switch/)
+
 ### Big Cloud Fabric (BCF)
 BCF 是一个开放网络 SDN 数据中心结构，能同时提供基于 VLAN 的物理及虚拟负载的管理 (P+V)，可基于原生的 Neutron ML2 Driver 与 OpenStack 无缝集成。通过在白盒交换机上安装 BCF 网络操作系统，BCF 控制器可实现对于数据中心网络结构的集中式控制；由控制器管理的本地分布式虚拟路由器实现了网络负载的分担；控制器中的 test path 工具可对数据包流经路径进行定位分析；控制器通过和 Neutron 数据库的周期性同步，保证了数据库的一致性。
 
