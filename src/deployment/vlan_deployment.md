@@ -76,7 +76,7 @@ network_vlan_ranges 的配置格式是：<physical_network>[:<vlan_min>:<vlan_ma
  在计算节点 / 网络节点上对配置文件 `plugins/ml2/openvswitch_agent.ini`，进行如下修改：
 
 ```
-bridge_mappings = physnet3:ovsbr3,physnet4:ovsbr4
+bridge_mappings = physnet3:ovsbr3,physnet4:ovsbr3
 ```
 
 手动创建 OpenvSwitch 网桥：
