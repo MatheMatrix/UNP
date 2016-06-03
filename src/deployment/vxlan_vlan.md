@@ -28,7 +28,7 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 |类别|品牌|型号|产品链接|备注|
 |:-:|:-:|:-:|:-:|:-:|
 |万兆网络适配器|Intel|Intel Ethernet Converged Network Adapter X710-DA2 & X710-DA4FH|[链接](http://www.intel.com/content/www/us/en/ethernet-products/converged-network-adapters/ethernet-xl710-brief.html)|- 支持网络虚拟化 Offload - 支持 DPDK - 出色的小包性能（用于NFV场景）- 优化 NAS (SMB, NFS) and SAN (iSCSI)|
-|万兆网络适配器|Intel|Intel Ethernet Converged Network Adapter X550|[链接](http://www.intel.com/content/www/us/en/ethernet-products/converged-network-adapters/ethernet-x550-brief.html)|- Low cost, low power, 10 GbE performance for the entire datacenter. - Standard CAT 6a cabling with RJ45 connectors. - Supports NBASE-T technology - PCI Express\* (PCIe\*) v 3.0 with up to 8.0 GT/s|
+|万兆网络适配器|Intel|Intel Ethernet Converged Network Adapter X550T2|[链接](http://www.intel.com/content/www/us/en/ethernet-products/converged-network-adapters/ethernet-x550-brief.html)|- Low cost, low power, 10 GbE performance for the entire datacenter. - Standard CAT 6a cabling with RJ45 connectors. - Supports NBASE-T technology - PCI Express\* (PCIe\*) v 3.0 with up to 8.0 GT/s|
 |万兆网络适配器|Mellanox|ConnectX®-4 Lx EN Cards|[链接](http://www.mellanox.com/page/products_dyn?product_family=219&mtag=connectx_4_lx_en_card)| - Highest performing boards for applications requiring high bandwidth, low latency and high message rate - 1/10/25/40/50GbE connectivity for servers and storage - Virtualization acceleration|
 
 #### 各个设备的网络适配器信息
@@ -139,10 +139,7 @@ tenant_network_types = vxlan,vlan
 network_vlan_ranges = physnet3:10:20
 ```
 
-上述配置支持多段不连续 VLAN 范围，比如：
-```
-network_vlan_ranges = physnet3:10:20,physnet4:30:40
-```
+`注：上述配置支持定义多种类型的 physical_network，和多段连续或不连续的 VLAN 范围。比如：physnet3:10:20, physnet3:15:30 或者 physnet3:10:20, physnet3:25:30 等。`
 
 其次，指定创建的外部网络为 VLAN 网络。对 plugins/ml2/ml2_conf.ini 进行如下修改：
 ```
@@ -152,11 +149,6 @@ external_network_type = vlan
 最后，在计算节点和网络节点上配置网桥对应关系。对 plugins/ml2/openvswitch_agent.ini 进行如下修改：
 ```
 bridge_mappings = physnet3:br-vlan
-```
-
-上述配置支持多组对应关系，比如：
-```
-bridge_mappings = physnet3:br-vlan,physnet4:br-vlan
 ```
 
 有关 VXLAN / VLAN 架构细节可参看本书的[VXLAN](../architecture/vxlan.md)一节和 [VLAN](../architecture/vlan.md)一节。
