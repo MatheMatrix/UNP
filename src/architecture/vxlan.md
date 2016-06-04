@@ -212,13 +212,13 @@ Neutron VXLAN network 的 segmentation_id 属性即为 VXLAN 的 VNI。
 
 #### L2 Population
 
- 早器的 Neutron 实现的 VXLAN 是 full-mesh 的，即每个 VTEP 之间都建立 VXLAN 隧道，当遇到未知单播、广播时，如果 VTEP 没有 cache 过这条流则会广播到所有 VTEP，造成严重的网络效率下降，为此，我们建议用户打开 L2 Population 来提升网络效率。
+ 早期的 Neutron 实现的 VXLAN 是 full-mesh 的，即每个 VTEP 之间都建立 VXLAN 隧道，当遇到未知单播、广播时，如果 VTEP 没有 cache 过这条流则会广播到所有 VTEP，造成严重的网络效率下降，为此，我们建议用户打开 L2 Population 来提升网络效率。
  
  在没打开 L2 Population 之前，通信路径如下：
  
  ![without_l2_pop][2]
  
-打开 L2 Population 后，如果配合 ARP Repsonder（参考 [ARP Responder](../arp_responder.md)），则可以达到 ARP 本地回复，流量走单播，即下图所示
+打开 L2 Population 后，如果配合 ARP Repsonder（参考 [ARP Responder](../architecture/arp_responder.md)），则可以达到 ARP 本地回复，流量走单播，即下图所示
 
  ![with_l2_pop_and_arp][3]
  
@@ -231,7 +231,7 @@ Neutron VXLAN network 的 segmentation_id 属性即为 VXLAN 的 VNI。
 
 #### DVR
 
-为了解决 IRB 的问题，Neutron 通过软件的方法在每个计算节点实现了分布式的路由和 NAT，可以有效提高整个系统的吞吐和性能，详见 [DVR](../DVR.md)。
+为了解决 IRB 的问题，Neutron 通过软件的方法在每个计算节点实现了分布式的路由和 NAT，可以有效提高整个系统的吞吐和性能，详见 [DVR](../architecture/dvr.md)。
 
 #### Conversational Learning
 
