@@ -21,13 +21,13 @@ maintenance/maintain/neutron/irqbalance
 
 该目录下有多个 shell 脚本，分别有不同的作用。
 
-##### 检查某个网卡的队列绑定情况，以 eth3 为例
+检查某个网卡的队列绑定情况，以 eth3 为例
 
 ```
 ./check_cpu_affinity.sh eth3
 ```
 
-##### 设置某个网卡的多队列绑定，以 eth3 为例
+设置某个网卡的多队列绑定，以 eth3 为例
 
 ```
 ./set_irq_affinity.sh eth3
@@ -41,7 +41,7 @@ maintenance/maintain/neutron/irqbalance
 
 #### 配置方法
 
-##### 设置某个网卡的 flow 哈希，以 eth3 为例
+设置某个网卡的 flow 哈希，以 eth3 为例
 
 ```
 ethtool -N eth3 rx-flow-hash udp4 sdnf
@@ -65,6 +65,8 @@ conntrack 会纪录每个连接，在外部回包时就能够 DNAT 到正确的�
 由 conntrack 表的实现可以得知，conntrack 表是根据哈希算法来查找 tuple 表项，时间复杂度为 O(1),
 到前面固定大小的hash table 满了，就会用链地址法在冲突的 conntrack 放在hastable 邻接的链表中，
 后续的查找会退化成线性查找，时间复杂度退化为 O(n)，造成包处理流程很长。
+
+#### 配置方法
 
 针对上述问题，由两个优化方向：
 
@@ -139,9 +141,9 @@ prlimit -p `cat /var/run/openvswitch/ovs-vswitchd.pid` --nofile=200000
 
 
 ## 参考文档
- [1] 网络节点优化参数汇总 https://confluence.ustack.com/pages/viewpage.action?pageId=16091446
- [2] 检查网卡多队列绑定状态 https://confluence.ustack.com/pages/viewpage.action?pageId=12782706
- [3] 网络节点负载高情景一 ，conntrack问题 https://confluence.ustack.com/pages/viewpage.action?pageId=9641517
- [4] Exploration of Large Scale Virtual Networks,  http://events.linuxfoundation.org/sites/events/files/slides/Scaling_1.pdf
+ * 网络节点优化参数汇总 https://confluence.ustack.com/pages/viewpage.action?pageId=16091446
+ * 检查网卡多队列绑定状态 https://confluence.ustack.com/pages/viewpage.action?pageId=12782706
+ * 网络节点负载高情景一 ，conntrack问题 https://confluence.ustack.com/pages/viewpage.action?pageId=9641517
+ * Exploration of Large Scale Virtual Networks,  http://events.linuxfoundation.org/sites/events/files/slides/Scaling_1.pdf
 
 [1]: ../../images/system/conntrack_hashtable.png
