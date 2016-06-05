@@ -14,6 +14,7 @@
    * [RBAC Networks](src/funcs/rbac_networks.md)
 * 提升
 * [部署](src/deployment/preface.md)
+   * [VXLAN + VLAN 自服务模型](src/deployment/vxlan_vlan.md)
    * [Neutron 配置](src/deployment/neutron_conf.md)
    * [UnitedStack 远程支持接入](src/deployment/remote_support.md)
 * [性能](src/performance/preface.md)
