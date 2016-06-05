@@ -1,6 +1,10 @@
-# 网络调优
+## 网络相关优化
 
-## 简介
+### UnitedStack 知识库相关文章
+
+ - 网络节点优化参数汇总 https://confluence.ustack.com/pages/viewpage.action?pageId=16091446
+ - 检查网卡多队列绑定状态 https://confluence.ustack.com/pages/viewpage.action?pageId=12782706
+ - 网络节点负载高情景一 ，conntrack问题 https://confluence.ustack.com/pages/viewpage.action?pageId=9641517
 
 ### CPU 亲和性绑定
 
@@ -11,9 +15,7 @@ CPU的亲和性， 就是进程要尽量在指定的 CPU 上尽量长时间地�
 
 网卡队列跟 CPU 绑定是将各个队列通过中断绑定到不同的核上，以满足网卡的需求。同时也可以降低单个CPU的负载，提升系统的吞吐能力。
 
-#### 配置方法
-
-配置网卡多队列中断绑定的脚本在 maintenance 中
+配置网卡多队列中断绑定的脚本在 UnitedStack GIT 仓库中 maintenance 项目内
 
 ```
 maintenance/maintain/neutron/irqbalance
@@ -33,13 +35,11 @@ maintenance/maintain/neutron/irqbalance
 ./set_irq_affinity.sh eth3
 ```
 
-### flow hash算法
+### UDP flow hash算法
 
 网卡驱动支持的哈希算法，能够把同一条流的数据包哈希到同一个队列中。在上一步的操作中，已经实现了队列
 跟 CPU 的亲和性，此时就能做到数据流跟 CPU 的亲和性。在云平台中开启该参数主要是作用于 UDP，
 为了提高 VxLAN 的性能。
-
-#### 配置方法
 
 设置某个网卡的 flow 哈希，以 eth3 为例
 
@@ -133,6 +133,92 @@ Number of cpus * Number of switch ports
 prlimit -p `cat /var/run/openvswitch/ovs-vswitchd.pid` --nofile=200000
 ```
 
+考虑到 ovs-vswitchd 可能被重启等问题，建议在系统层面设置文件描述符数量：
+
+```
+vi /etc/security/limits.conf
+* hard nofile 102400
+* soft nofile 102400
+```
+
+### netdev_max_backlog 等内核参数
+
+在 ovs datapath 复制报文的过程中，如果是网络节点，可能会有上千个 port。当在 br-ex 或类似的场景发送 ARP 报文时，ovs 的 normal 动作会对此进行遍历处理，这个处理过程中不会进行 CPU 释放的操作，也即将持续调用 enqueue_to_backlog（openvswitch datapath最初调用的是netif_rx，但最终调到enqueue_to_backlog），因此默认的 netdev_max_backlog 可能会不足够使用，因此需要调整 netdev_max_backlog。
+
+此外，还有其他通用网络调优实践，并列在此：
+
+```
+/etc/sysctl.conf
+net.core.netdev_max_backlog = 250000
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+net.core.rmem_default = 600000
+net.core.wmem_default = 600000
+```
+
+### ASLR
+
+一些优化建议会建议关闭 ASLR 以提升性能，根据 2014 发表在 Proceedings of the International Workshop on Reproducible Research Methodologies 的 *How Much Does Memory Layout Impact Performance? A Wide Study* 显示并没有明显变化，但也有一些实验数据表示 ASLR 会对性能产生不利影响，特别是可能造成性能抖动，我们默认不会关闭 ASLR，但在此提供关闭方法：
+
+```
+/etc/sysctl.conf
+kernel.randomize_va_space = 0
+```
+
+### 网卡其他配置
+
+#### Ring Buffer
+
+如果出现网卡层面丢包，可以考虑调高网卡的 Ring Buffer，例如：
+
+```
+ethtool -G eth0 rx 2048
+```
+
+注意这有可能会在一定程度上增大网络延时。但一般来说，在 latency 本来就比较小的情况下，适当的增大 buffer 并不会带来明显的影响，除非是一些对 latency 极度敏感的交易场所、流媒体等。
+
+#### 中断聚合
+
+如果系统中断过高，可以考虑通过中断聚合优化，对于 Intel 82599、Intel X540 网卡，经实测只有 rx-usecs 是有效的。
+
+```
+ethtool -C eth2 rx-usecs 50
+```
+
+#### Offloading
+
+对于桥接、路由场景，特别是 Overlay 网络，offloading 特性并不建议开启，这是 Intel ixgbe 驱动中有明确建议的。
+
+ > The ixgbe driver compiles by default with the LRO (Large Receive
+Offload) feature enabled.  This option offers the lowest CPU utilization for
+receives, but is completely incompatible with *routing/ip forwarding* and
+*bridging*.  If enabling ip forwarding or bridging is a requirement, it is
+necessary to disable LRO using compile time options as noted in the LRO
+section later in this document.  The result of not disabling LRO when combined
+with ip forwarding or bridging can be low throughput or even a kernel panic.
+
+ > Due to a known general compatibility issue with LRO and routing, do not use
+  LRO when routing or bridging packets.
+
+
+### BIOS 推荐配置
+
+特别是在高性能需求下，Intel CPU 的 BIOS 建议做如下配置：
+
+| BIOS 选项 | 推荐值 |
+| -------- | ------ |
+| Operating Mode /Power profile | Maximum Performance |
+| C-States | Disabled |
+| Turbo mode | Enabled |
+| Hyper-Threading HPC: enabled |
+| IO non posted prefetching | Enabled |
+| CPU frequency select | Max performance |
+| Memory speed | Max performance |
+| Memory channel mode | Independent |
+| Node Interleaving | Disabled / NUMA |
+|Channel Interleaving | Enabled |
+| Thermal Mode | Performance |
+￼
 
 ## 已知系统问题
 
@@ -140,10 +226,11 @@ prlimit -p `cat /var/run/openvswitch/ovs-vswitchd.pid` --nofile=200000
  创建和配置操作速率会下降数倍，并且在多核系统中影响会更大。见 https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1328088
 
 
-## 参考文档
- * 网络节点优化参数汇总 https://confluence.ustack.com/pages/viewpage.action?pageId=16091446
- * 检查网卡多队列绑定状态 https://confluence.ustack.com/pages/viewpage.action?pageId=12782706
- * 网络节点负载高情景一 ，conntrack问题 https://confluence.ustack.com/pages/viewpage.action?pageId=9641517
+### 参考文档
+
  * Exploration of Large Scale Virtual Networks,  http://events.linuxfoundation.org/sites/events/files/slides/Scaling_1.pdf
+ * Linux* Base Driver for the Intel(R) Ethernet 10 Gigabit PCI Express Family of
+Adapters, https://downloadmirror.intel.com/22919/eng/README.txt 
+ * How Much Does Memory Layout Impact Performance? A Wide Study, https://uwaterloo.ca/embedded-software-group/sites/ca.embedded-software-group/files/uploads/files/hpca-datamill.pdf
 
 [1]: ../../images/system/conntrack_hashtable.png

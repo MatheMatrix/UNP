@@ -26,6 +26,8 @@ Neutron 配置主要涉及：
 
 各作用解释
 
+本节给出了一个默认架构 ＋ VXLAN、VLAN 自服务模型下的配置样例。
+
 ### Neutron.conf
 
 ```
