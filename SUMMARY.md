@@ -38,7 +38,10 @@
        * [社区 API 支持](src/ecosystem/technical_concerns/community_api.md)
        * [集成方法](src/ecosystem/technical_concerns/integration.md)
        * [其他](src/ecosystem/technical_concerns/others.md)
-* 系统
+* [系统](src/system/preface.md)
+   * [LLDP](src/system/lldp.md)
+   * [优化](src/system/optimization.md)
+   * [vhost-net](src/system/vhost-net.md)
 * [用户典型使用场景](src/scenario/preface.md)
    * [虚拟机多 FloatingIP 使用](src/scenario/multi_floatingips.md)
 
