@@ -12,7 +12,7 @@
 
 ### DELL SonicWALL 防火墙
 [DELL SonicWALL](www.sonicwall.com) 防火墙是我们长期使用的防火墙，性能稳定，配置简单。
-以下是sonicwall 防火墙的IPsec VPN 配置方法：
+以下是 SonicWALL 防火墙的IPsec VPN 配置方法：
 
 1. 创建10.12.0.0地址段
 

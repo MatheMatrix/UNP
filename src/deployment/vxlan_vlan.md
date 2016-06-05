@@ -13,13 +13,15 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 
 |设备类型|用途|推荐配置|数量|备注|
 |:-:|:-:|:-:|:-:|:-:|
-|服务器|计算节点|至少2路Intel E5 8核 2.4Ghz 以上处理器，支持超线程技术，内存最低 256G|3|3台起配|
-|服务器|网络节点|至少2路Intel E5 8核 2.4Ghz 以上处理器，支持超线程技术，内存最低 128G|3||
-|服务器|控制节点|至少2路Intel E5 8核 2.4Ghz 以上处理器，支持超线程技术，内存最低 128G|3||
+|服务器|计算节点|2路Intel E5 8核 2.4Ghz 以上处理器，支持超线程技术，内存最低 256G|3|3台起配|
+|服务器|网络节点|2路Intel E5 8核 2.4Ghz 以上处理器，支持超线程技术，内存最低 128G|3||
+|服务器|控制节点|2路Intel E5 8核 2.4Ghz 以上处理器，支持超线程技术，内存最低 128G|3||
 |接入层千兆设备|接入交换设备|48口千兆，支持10G上联|1|根据业务需求增加设备数量|
 |接入层万兆设备|接入交换设备|48口万兆，支持PBR，40G上联|1|根据业务需求增加设备数量|
 |VPN 设备|远程接入|支持 IPSec|1|参考[UnitedStack 远程支持接入](remote_support.md)|
 |线缆|设备连接线缆|服务器连接线缆：DAC/SFP+/RJ45(根据设备接口而定) 交换机堆叠线缆：DAC/SFP+/QSFP+(根据设备接口而定)|若干|||
+
+系统 BIOS 的配置参考本书系统一节。
 
 ### 网络适配器相关信息
 
@@ -31,7 +33,9 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 |万兆网络适配器|Intel|Intel Ethernet Converged Network Adapter X550T2|[链接](http://www.intel.com/content/www/us/en/ethernet-products/converged-network-adapters/ethernet-x550-brief.html)|- Low cost, low power, 10 GbE performance for the entire datacenter. - Standard CAT 6a cabling with RJ45 connectors. - Supports NBASE-T technology - PCI Express\* (PCIe\*) v 3.0 with up to 8.0 GT/s|
 |万兆网络适配器|Mellanox|ConnectX®-4 Lx EN Cards|[链接](http://www.mellanox.com/page/products_dyn?product_family=219&mtag=connectx_4_lx_en_card)| - Highest performing boards for applications requiring high bandwidth, low latency and high message rate - 1/10/25/40/50GbE connectivity for servers and storage - Virtualization acceleration|
 
-#### 各个设备的网络适配器信息
+注：由于 X550 使用 RJ45 接口，因此需要注意交换机需与之配套。
+
+#### 网卡名称与使用参考
 
 |设备角色|千兆网络适配器|万兆网络适配器|Bonding|
 |:-:|:-:|:-:|:-:|
@@ -40,7 +44,7 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 |网络节点|eth0|eth2|eth0 + eth1 => Bond0|
 |网络节点|eth1|eth3|eth2 + eth3 => Bond1|
 
-#### 设备兼容性
+#### 网络适配器兼容列表
 
 |类别|品牌|型号|是否兼容|
 |:-:|:-:|:-:|:-:|
@@ -52,7 +56,7 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 |千兆网络适配器|Intel|Intel Corporation I350 Gigabit Network Connection|兼容|
 |千兆网络适配器|Broadcom|Broadcom Corporation NetXtreme BCM5720 Gigabit Ethernet PCIe|兼容|
 
-#### VLAN 规划
+#### VLAN 规划示例
 
 ||VLAN 1100|VLAN 1124|VLAN 1002|VLAN 1116|
 |:-:|:-:|:-:|:-:|:-:|
