@@ -91,6 +91,8 @@ ACI 提供了一个Driver 作为 GBP 的 Nativa Driver 将 GBP 的资源转换�
 | Network API* | ML2 model not available. This may impact higher level tools that require network/router model such as Cloud Foundry | GBP model not available |
 | Service chaining | Easy use of APIC service chaining and device packages | Limited use of device packages.  Easier of use of LBaaS |
 
+![gbp_ml2][3]
+
 ### OpFlex Architecture
 
 每个计算节点上运行 neutron-opflex-agent，通过 RPC 获取 neutron-server 发送的 endpoint
@@ -110,7 +112,44 @@ agent-ovs 通过其获取 Policy 相关数据，同时通过 OpenFlow 协议管�
 
  * Metadata Proxy：在计算节点运行 metadata-agent，通过 agent-ovs 下发流表将 matadata
  请求重定向，实现分布式 Metadata Proxy
+ 
+![opflex][4]
+
+### 在 Horizon 的演示
+
+GBP所有的操作均在 Horizon 的 Policy Tab 下面，直接在 Compute 和 Network 下面操作将无法通信。
+
+![h1][5]
+
+首先需要创建一个 L3 policy, 对应于一个VRF，这里需要输入 IP pool，相当于一个 base 的cidr。同时还要输入掩码长度，比如输入 24，那么待会儿创建 L2 Policy的时候就会创建一个网络和一个包含在 base cidr 中 24 位掩码的子网。
+
+![h2][6]
+
+接着，创建L2 Policy ，选中我们刚刚创建的那个L3 Policy
+
+![h2][7]
+
+上述过程中，我们就创建了一个网络和子网，接着可以创建 rule 供接下来的 Group 使用 ，关于 rule 可以参考 UnitedStack 知识库相关文章。
+
+![h3][8]
+
+接下来为了容纳虚拟机，就需要创建 Group。选中刚创建的 L2 policy。创建的 Group 的同时可以应用一些规则。
+
+![h4][9]
+
+进入这个 Group，Create Member(创建虚拟机)，虚拟机的网络选刚创建的 Group。
+
+![h5][10]
+
 
 
 [1]: ../../images/ecosystem/aci-opflex-phy-arch.png
 [2]: ../../images/ecosystem/opflex-arch.png
+[3]: ../../images/ecosystem/aci2.png
+[4]: ../../images/ecosystem/aci3.png
+[5]: ../../images/ecosystem/horizon1.png
+[6]: ../../images/ecosystem/horizon2.png
+[7]: ../../images/ecosystem/horizon3.png
+[8]: ../../images/ecosystem/horizon4.png
+[9]: ../../images/ecosystem/horizon5.png
+[10]: ../../images/ecosystem/horizon6.png
