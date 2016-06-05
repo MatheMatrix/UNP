@@ -222,6 +222,9 @@ Neutron VXLAN network 的 segmentation_id 属性即为 VXLAN 的 VNI。
 
  ![with_l2_pop_and_arp][3]
  
+一条通过 L2 Population 添加的流表如下：
+` cookie=0x9d7197dac63a0de6, duration=179342.098s, table=20, n_packets=0, n_bytes=0, idle_age=65534, hard_age=65534, priority=2,dl_vlan=18,dl_dst=fa:16:3e:60:6d:02 actions=strip_vlan,set_tunnel:0x16,output:2`
+
  但是 L2 Population 问题也很明显：
  
  - 云资源管理平面强制影响了数据平面；
@@ -247,6 +250,10 @@ NXM_OF_ETH_DST[]=NXM_OF_ETH_SRC[]，包的目的 MAC 跟当前流的源 MAC 匹�
 load:0->NXM_OF_VLAN_TCI[]，将 VLAN 号改为 0；
 load:NXM_NX_TUN_ID[]->NXM_NX_TUN_ID[]，将 Tunnel 号修改为当前的 Tunnel 号；
 output:NXM_OF_IN_PORT[]，从当前入口发出。
+
+通过 Conversational Learning 的另一个好处是，由于 Conversational Learning 和 L2 Population 都作用在了
+OVS bridge br-tun table 20 上，那么，如果由于某些意外情况导致 L2 Population 无法正常下发流表，还可通过
+Conversational Learning 的形式使得 OVS 以被动的方式（Conversational Learning）优化网络流向。
 
 #### Flooding VTEP
 
