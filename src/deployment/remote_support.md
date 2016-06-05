@@ -4,14 +4,14 @@
 
 
 项目实施完毕后，UnitedStack<sup>®</sup> United Networking Platform(UNP) 以远程接入方式提供技术支持及运维，
-为了保证数据的安全性，建议采用 IPsec VPN 方式与客户连通。
+为了保证数据的安全性和兼容性，建议采用 IPsec VPN 方式与客户连通。
 目前 UnitedStack<sup>®</sup> United Networking Platform(UNP) UC
 中心使用了两个厂商的防火墙与客户打通 VPN ，DELL sonicwall 和 Fortinet。
-理论上讲客户可以采用任何厂商的防火墙与 UnitedStack<sup>®</sup> United Networking Platform(UNP) 防火墙建立VPN，
+理论上讲客户可以采用任何厂商的防火墙与 UnitedStack UC（Unified Center） 防火墙建立VPN，
 但是由于不同厂商由于兼容性存在问题，因此建议客户使用我们推荐的防火墙。
 
 ### DELL sonicwall 防火墙
-DELL sonicwall 防火墙是我们长期使用的防火墙，性能稳定，配置简单。
+[DELL sonicwall](www.sonicwall.com) 防火墙是我们长期使用的防火墙，性能稳定，配置简单。
 以下是sonicwall 防火墙的IPsec VPN 配置方法：
 
 1. 创建10.12.0.0地址段
@@ -35,11 +35,11 @@ DELL sonicwall 防火墙是我们长期使用的防火墙，性能稳定，配�
 
 5. 开放策略
 
- 策略无需单独开放，sonicwall 防火墙在创建创建 vpn 的时候默认创建了。
+ 策略无需单独开放，Dell SonicWALL 防火墙在创建创建 vpn 的时候默认创建了。
  ![wall8][8]
 
 ### 推荐使用Fortinet防火墙
-Fortinet 防火墙是我们为不能与 sonicwall 防火墙建立 VPN 而新建的另外一组防火墙，Fortinet 防火墙功能强大、可靠，且配置相对简单。
+Fortinet 防火墙是我们为不能与 Dell SonicWALL 防火墙建立 VPN 而新建的另外一组防火墙，Fortinet 防火墙功能强大、可靠，且配置相对简单。
 以下是 Fortinet 防火墙的 IPsec VPN 配置方法：
 
 1. 添加地址对象
