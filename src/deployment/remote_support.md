@@ -10,8 +10,8 @@
 理论上讲客户可以采用任何厂商的防火墙与 UnitedStack UC（Unified Center） 防火墙建立VPN，
 但是由于不同厂商由于兼容性存在问题，因此建议客户使用我们推荐的防火墙。
 
-### DELL sonicwall 防火墙
-[DELL sonicwall](www.sonicwall.com) 防火墙是我们长期使用的防火墙，性能稳定，配置简单。
+### DELL SonicWALL 防火墙
+[DELL SonicWALL](www.sonicwall.com) 防火墙是我们长期使用的防火墙，性能稳定，配置简单。
 以下是sonicwall 防火墙的IPsec VPN 配置方法：
 
 1. 创建10.12.0.0地址段
