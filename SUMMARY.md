@@ -29,6 +29,8 @@
    * [升级对API停服时间减少](src/stability/upgrade.md)
 * 高级服务
 * [生态系统](src/ecosystem/preface.md)
+   * [OpenStack 集成 ACI](src/ecosystem/aci.md)
+   * [OpenStack 集成 BCF](src/ecosystem/bcf.md)
    * [技术重点](src/ecosystem/technical_concerns.md)
        * [二层隔离网络实现](src/ecosystem/technical_concerns/l2_implementation.md)
        * [虚拟路由器实现](src/ecosystem/technical_concerns/virtual_router.md)
