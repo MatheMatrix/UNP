@@ -172,7 +172,15 @@ kernel.randomize_va_space = 0
 如果出现网卡层面丢包，可以考虑调高网卡的 Ring Buffer，例如：
 
 ```
-ethtool -G eth0 rx 2048
+ethtool -G ethX rx 2048
+```
+
+这样的设置是临时生效的，如果机器发生重启将会覆盖配置，因此我们建议通过配置文件设置：
+ 
+```
+/etc/sysconfig/network-scripts/ifcfg-ethX
+...
+ETHTOOL_OPTS="-G ethX rx 2048"
 ```
 
 注意这有可能会在一定程度上增大网络延时。但一般来说，在 latency 本来就比较小的情况下，适当的增大 buffer 并不会带来明显的影响，除非是一些对 latency 极度敏感的交易场所、流媒体等。
@@ -182,8 +190,10 @@ ethtool -G eth0 rx 2048
 如果系统中断过高，可以考虑通过中断聚合优化，对于 Intel 82599、Intel X540 网卡，经实测只有 rx-usecs 是有效的。
 
 ```
-ethtool -C eth2 rx-usecs 50
+ethtool -C ethX rx-usecs 50
 ```
+
+配置的固化同上。
 
 #### Offloading
 
@@ -199,6 +209,16 @@ with ip forwarding or bridging can be low throughput or even a kernel panic.
 
  > Due to a known general compatibility issue with LRO and routing, do not use
   LRO when routing or bridging packets.
+  
+ 可以使用 `ethtool -k ethX lro=off` 关闭，但是这样的关闭是临时生效的，如果机器发生重启将会覆盖配置，因此我们建议通过配置文件关闭：
+ 
+ ```
+/etc/sysconfig/network-scripts/ifcfg-ethX
+...
+ETHTOOL_OPTS="-K ethX gso off gro off lro off"
+ ```
+ 
+ 注意这个选项因为是针对 ixgbe 驱动的，所以只在物理网卡设置有效，虚拟网卡是不需要的。
 
 
 ### BIOS 推荐配置
@@ -210,21 +230,34 @@ with ip forwarding or bridging can be low throughput or even a kernel panic.
 | Operating Mode /Power profile | Maximum Performance |
 | C-States | Disabled |
 | Turbo mode | Enabled |
-| Hyper-Threading HPC: enabled |
+| Hyper-Threading | Enabled |
 | IO non posted prefetching | Enabled |
 | CPU frequency select | Max performance |
 | Memory speed | Max performance |
 | Memory channel mode | Independent |
 | Node Interleaving | Disabled / NUMA |
-|Channel Interleaving | Enabled |
+| Channel Interleaving | Enabled |
 | Thermal Mode | Performance |
 ￼
 
 ## 已知系统问题
 
  * 内核 network namespace 性能退化，受影响的内核版本 3.8 ～3.19，在 namespace 数量大(1k 的数量级)时，对每个 namespace 的
- 创建和配置操作速率会下降数倍，并且在多核系统中影响会更大。见 https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1328088
+ 创建和配置操作速率会下降数倍，并且在多核系统中影响会更大。详见 https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1328088
 
+实验方法是通过一些对 namespace 的操作，封装成脚本的 transaction 来模拟虚拟路由器的创建和执行，考察不同核心数量和 namespace 数量下的执行速度：
+
+250 个 namespace：
+
+![250][2]
+
+1250 个 namespace：
+
+![1250][3]
+
+2250 个 namespace：
+
+![2250][4]
 
 ### 参考文档
 
@@ -234,3 +267,6 @@ Adapters, https://downloadmirror.intel.com/22919/eng/README.txt
  * How Much Does Memory Layout Impact Performance? A Wide Study, https://uwaterloo.ca/embedded-software-group/sites/ca.embedded-software-group/files/uploads/files/hpca-datamill.pdf
 
 [1]: ../../images/system/conntrack_hashtable.png
+[2]: ../../images/system/QQ20160606-1.png
+[3]: ../../images/system/QQ20160606-2.png
+[4]: ../../images/system/QQ20160606-3.png
