@@ -220,6 +220,25 @@ ETHTOOL_OPTS="-K ethX gso off gro off lro off"
  
  注意这个选项因为是针对 ixgbe 驱动的，所以只在物理网卡设置有效，虚拟网卡是不需要的。
 
+### 虚拟网卡多队列
+
+virtio-net 针对每个虚拟网卡只有一个 tx/rx 队列，对于有较高虚拟网络性能的情况可能希望虚拟机能够充分使用多核与多队列，需要在 Nova 启动虚拟机时对其 XML 文件变化：
+
+```
+<interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+      <driver name='vhost' queues='N'/>
+</interface>
+```
+
+其中 N 为网卡队列数量，此外修改网卡驱动的参数：
+
+```
+ethtool -L eth0 combined M
+```
+
+M 应当为 1~N 之间，此功能目前社区 Nova 并不支持，因此并未开启。
 
 ### BIOS 推荐配置
 

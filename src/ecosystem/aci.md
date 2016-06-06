@@ -1,8 +1,8 @@
-# Cisco ACI with OpenStack
+## Cisco ACI 对接
 
-## 知识总览
+### 简介
 
-### Cisco ACI 简介
+#### Cisco ACI 简介
 
 Cisco Application Centric Infrastructure (ACI) policy-based 架构，通过集中式的控
 制器和交换机组成 fabric。ACI 提供可编程的 API 接口，使得能够与 OpenStack 或其它
@@ -13,7 +13,7 @@ ACI fabric 提供了一个基于 VxLAN 集成的二三层 overlay 网络，将�
 的提供服务。
 
 
-### OpFlex 简介
+#### OpFlex 简介
 
 OpFlex 是一个开发可扩展的策略协议，用来将 ACI 中定义的策略转化为其它设备能够实现
 的功能。例如，通过 OpFlex 协议可以将 ACI 中的策略模型转换到计算节点上的虚拟交换机
@@ -22,10 +22,9 @@ OpFlex 是一个开发可扩展的策略协议，用来将 ACI 中定义的策�
 OpFlex-based OpenStack 驱动支持两种不同的部署方式。
 
  * 结合 Neutron API 和 ML2，提供网络、子网、路由器、子网等基本的功能
-
  * 结合 Group-Based Policy 的 Native Driver，提供的功能跟 ACI 的 Policy 模型更接近
 
-## 物理架构
+### 物理架构
 
 ACI fabric 包含一个基于 Nexus 9000 Spine/Leaf 拓扑架构，与 OpenStack 则还需要一组物理
 服务器来运行 OpenStack 。
@@ -34,9 +33,9 @@ ACI External Routed Network 提供 OpenStack 内部虚拟机跟外部网络三�
 
 ![aci-opflex-phy-arch][1]
 
-## OpFlex Architecture
+### OpFlex Architecture
 
-### OpFlex ML2 Architecture
+#### OpFlex ML2 Architecture
 
 Neutron 中 ML2 通过 TypeDriver 和 MechanismDriver 来定义和实现网络功能。通常的网
 络类型包括vlan，vxlan，gre 等。在这个架构中，新增加了一种网络类型 opflex ,具体实
@@ -46,7 +45,7 @@ Neutron 中 ML2 通过 TypeDriver 和 MechanismDriver 来定义和实现网络�
 |:-------------- |:------------------- |:----------- |
 | Project | Tenant (fvTenant) | The project is directly mapped to a Cisco APIC tenant. |
 | Network | EPG (fvAEPg) Bridge domain (fvBD) | Network creation or deletion triggers both EPG and bridge domain configurations. The Cisco ACI fabric acts as a distributed Layer 2 fabric, allowing networks to be present anywhere. |
-| Subnet | Subnet (fvSubnet) |The subnet is a 1:1 mapping. ｜
+| Subnet | Subnet (fvSubnet) | The subnet is a 1:1 mapping. ｜
 | Security Group and Rule |  |Security groups are fully supported as part of the solution. However, these resources are not mapped to Cisco APIC, but are instead enforced through IP tables as they are in traditional OpenStack deployments. |
 | Router | Contract (vzBrCP) Subject (vzSubj) Filter (vzFilter) | Contracts are used to connect EPGs and define routed relationships. The Cisco ACI fabric also acts as a default gateway. The Layer 3 agent is not used. |
 | Network: external | Outside | An outside EPG, including the router configuration, is used. |
@@ -56,7 +55,7 @@ Neutron 中 ML2 通过 TypeDriver 和 MechanismDriver 来定义和实现网络�
 到的的请求转发到 APIC 上。
 
 
-### OpFlex GBP Native Architecture
+#### OpFlex GBP Native Architecture
 
 Group-Based Policy 是一个OpenStack的一个API 框架，提供了一个 intent-driven model
 (意向性驱动的模型)，独立于底层基础设施来描述应用需求。
@@ -82,7 +81,7 @@ GBP 以 service plugin的方式运行在 neutron-server的进程空间，未来�
 ACI 提供了一个Driver 作为 GBP 的 Nativa Driver 将 GBP 的资源转换成 ACI 的 Policy
 数据模型，接受到的的请求转发到 APIC 上。
 
-### ML2 与 GBP Native 对比
+#### ML2 与 GBP Native 对比
 
 |   | GBP | ML2 |
 |:-- |:--- |:--- |
@@ -93,7 +92,7 @@ ACI 提供了一个Driver 作为 GBP 的 Nativa Driver 将 GBP 的资源转换�
 
 ![gbp_ml2][3]
 
-### OpFlex Architecture
+#### OpFlex Architecture
 
 每个计算节点上运行 neutron-opflex-agent，通过 RPC 获取 neutron-server 发送的 endpoint
 相关的更新消息，并把 endpoint 信息写入本地文件中；OpFlex Proxy 运行在 Leaf 交换机上，
@@ -101,7 +100,7 @@ agent-ovs 通过其获取 Policy 相关数据，同时通过 OpenFlow 协议管�
 
 ![opflex-arch][2]
 
-### OpFlex 分布式网络服务
+#### OpFlex 分布式网络服务
  * NAT：计算节点上的 Open vSwitch 网桥实现了公网访问的 Floating IP 和 SNAT，虚拟机对
  外部网络的访问会先进行地址转换，然后路由到 APIC 中定义的 External Network 中
 
@@ -115,7 +114,7 @@ agent-ovs 通过其获取 Policy 相关数据，同时通过 OpenFlow 协议管�
  
 ![opflex][4]
 
-### 在 Horizon 的演示
+#### 在 Horizon 的演示
 
 GBP所有的操作均在 Horizon 的 Policy Tab 下面，直接在 Compute 和 Network 下面操作将无法通信。
 
@@ -140,7 +139,6 @@ GBP所有的操作均在 Horizon 的 Policy Tab 下面，直接在 Compute 和 N
 进入这个 Group，Create Member(创建虚拟机)，虚拟机的网络选刚创建的 Group。
 
 ![h5][10]
-
 
 
 [1]: ../../images/ecosystem/aci-opflex-phy-arch.png

@@ -56,5 +56,6 @@ UnitedStack<sup>®</sup> UNP 中一个重要的组成部分是它的生态系统
 | 6WIND Virtual Accelerator | 测试过之前版本，6月测试 L 版 |
 | CPlane DCI Solution | 测试计划 |
 | OneConveragence L4-L7 Integration | 测试计划 |
+| Netronome | 测试计划 |
 
 UnitedStack<sup>®</sup> UNP 是一个厂商中立的平台，原则上不会对任何厂商做非技术性的推荐，只对产品的集成效果作出经过我们评估的保障、并对集成效果提供可靠、专业的测试与分析。
