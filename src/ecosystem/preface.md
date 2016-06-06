@@ -37,21 +37,25 @@ UnitedStack<sup>®</sup> UNP 中一个重要的组成部分是它的生态系统
    - Cisco ICF
    - F5 BIG-IP
    - 山石云∙界 SG-6000-VM
- - 网络硬件设备
+ - 硬件设备
    - 英特尔<sup>®</sup> 以太网控制器
-   - 英特尔<sup>®</sup> 服务器处理器
+   - 英特尔<sup>®</sup> 至强 <sup>®</sup> 处理器
    - Mellanox ConnectX<sup>®</sup> 以太网控制器
-   - 戴尔™ PowerConnect 交换机
+   - 戴尔™ Networking S 系列交换机
+   - 戴尔™ Networking N 系列交换机
    - Cisco Nexus<sup>®</sup> 交换机
 
 目前处于测试中或列于测试计划的产品有：
  
- - Huawei Agile Controller
- - H3C Virtual Converged Framework
- - F5 BIGIP VE
- - Citrix NetsSaler NCC（可对接 NetScaler MPX、VPX、SDX）
- - 6WIND Virtual Accelerator
- - CPlane DCI Solution
- - OneConveragence L4-L7 Integration
+| 产品 | 目前状态 |
+| ---- | ------ |
+| Huawei Agile Controller | 测试中 |
+| H3C Virtual Converged Framework | 测试计划 |
+| F5 BIGIP VE | 测试计划 |
+| Citrix NetsSaler NCC（可对接 NetScaler MPX、VPX、SDX） | 6月份测试 |
+| 6WIND Virtual Accelerator | 测试过之前版本，6月测试 L 版 |
+| CPlane DCI Solution | 测试计划 |
+| OneConveragence L4-L7 Integration | 测试计划 |
+| Netronome | 测试计划 |
 
 UnitedStack<sup>®</sup> UNP 是一个厂商中立的平台，原则上不会对任何厂商做非技术性的推荐，只对产品的集成效果作出经过我们评估的保障、并对集成效果提供可靠、专业的测试与分析。
