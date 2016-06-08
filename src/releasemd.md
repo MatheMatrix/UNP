@@ -12,7 +12,7 @@ UnitedStack<sup>®</sup> UNP 1.0 包含开源和厂商两类核心网络实现�
 
 为了提供更加完善和专业的方案，UnitedStack<sup>®</sup> UNP 提供了大量的第三方厂商产品支持，除了上述核心网络实现外，还提供了 Cisco ICF、F5 BIG-IP、Hillstone 云界等的支持，目前在开展的有排期的第三方产品还有 6WIND Virtual Accelerator、Citrix NetsSaler NCC，详情见本白皮书的生态部分。
 
-UnitedStack<sup>®</sup> UNP 的目前主要工作重点主要还在开源实现 Open vSwitch Driver 或其他基于开源软件的实现上，包括在其基础上的：
+UnitedStack<sup>®</sup> UNP 的目前主要工作重点在开源实现 Open vSwitch Driver 或其他基于开源软件的实现上，包括在其基础上的：
 
  - 架构
    - 分布式三层、VXLAN 等
