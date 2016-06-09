@@ -2,6 +2,8 @@
 
 ---
 
+参考：http://f5-openstack-lbaasv2.readthedocs.io/
+
 离线部署
 
 相关包：

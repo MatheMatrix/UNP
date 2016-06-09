@@ -1,4 +1,4 @@
-# UnitedStack<sup>®</sup> United Networking Platform 技术白皮书
+# UnitedStack<sup>®</sup> UNP 技术白皮书
 
 ---
 
@@ -34,7 +34,7 @@ UnitedStack® UNP Perlis 的基础组成包含以下方面：
   - F5 Networks<sup>®</sup>
  - 其他开源软件
   - HAProxy
-  - Openswan
+  - Strongswan
 
 其组织结构如图所示：
 

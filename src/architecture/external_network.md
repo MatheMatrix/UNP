@@ -4,12 +4,9 @@
 
 ### External Network 的定义
  
- External Network 是 Neutron 网络模式的一种。Neutron 通过 Exnternal Network
-提供租户的虚拟设备（包括虚拟机，路由器，负载均衡器）访问外部网络
-（通常是 Internet，也可以是某内网）的能力。租户可以通过在 External Network 中创建
-Floating IP ，将其绑定到虚拟设备上，从而只需访问 FloatingIP 即可访问租户的虚拟设备。
+ External Network 是 UnitedStack<sup>®</sup> UNP 提供的用于企业内网互联或外部网络连接用的网络。租户可以通过在 External Network 中创建
+Floating IP，将其绑定到虚拟设备（如虚拟机、负载均衡器等）上，从而只需访问 FloatingIP 即可访问租户的虚拟设备。通过在虚拟路由器上开启网关并开启 SNAT（默认开启）即可多个虚拟机共用 FloatingIP 访问外部网络。
 Neutron 允许创建多个 External Networks。
-
 
 ### External Network 的工作原理
 
@@ -103,11 +100,15 @@ Created a new network:
 
 || OVS 网桥 |外部网络网卡| 交换机端口配置 |物理网卡速率|虚拟网关所在网桥|
 |:-:|:-:|:-:|:-:|:-:|:-:|
-|Local 类型|单独的 OVS 网桥 - br-ex|单独的外网网卡|Access|一般是千兆|br-ex|
-|VLAN 类型|和 VLAN 网桥共用 OVS 网桥 - br-vlan|共用的 VLAN 网络网卡|Trunk|万兆|br-vlan|
+|Local 类型|单独的 OVS 网桥 br-ex|单独的外网网卡|Access|默认千兆|br-ex|
+|VLAN 类型|和 VLAN 网桥共用 OVS 网桥 ovsbr3|共用的 VLAN 网络网卡|Trunk|万兆|ovsbr3|
 
 因此，我们推荐的是基于 br-vlan 这种模式的外部网络。这种模式的优点是和 SDN 网络共用万兆网卡
 从而节约网络资源、方便网卡多队列性能的提升、并且节省硬件网络成本。
+
+### 分布式路由
+
+UnitedStack<sup>®</sup> UNP 默认提供分布式的路由，因此通过 FloatingIP 访问外部网络是分布式的，但对于 1:N NAT，即多个虚拟机通过开启网关的路由器共享一个地址访问仍然是集中式的。
 
 
  有关 External Network 的具体配置和部署过程请参考[部署 - External Network](../deployment/external_network.md)。

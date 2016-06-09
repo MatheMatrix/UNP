@@ -3,7 +3,7 @@
 ### 简介
 
 
-项目实施完毕后，UnitedStack<sup>®</sup> United Networking Platform(UNP) 以远程接入方式提供技术支持及运维，
+项目实施中和实施完毕后，UnitedStack<sup>®</sup> United Networking Platform(UNP) 以远程接入方式提供技术支持及运维，
 为了保证数据的安全性和兼容性，建议采用 IPsec VPN 方式与客户连通。
 目前 UnitedStack<sup>®</sup> United Networking Platform(UNP) UC
 中心使用了两个厂商的防火墙与客户打通 VPN ，DELL sonicwall 和 Fortinet。

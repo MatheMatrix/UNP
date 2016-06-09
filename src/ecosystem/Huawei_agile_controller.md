@@ -4,7 +4,6 @@
 
 部署
 
-
 ./install.sh
 
 cleanup db

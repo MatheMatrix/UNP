@@ -40,11 +40,10 @@ Neutron通过OpenvSwitch Bridge br-tun 提供 ARP Responder 的功能。
 
  根据刚才对于 ARP 的介绍，如果 VM B 从来没有和 VM A 通信过，当 VM A 要和 VM B 通信时，Node A 并不知道 VM B 的 MAC 地址是什么，
 此时会将广播请求泛洪到所有 Node A 相连的 Tunnel Ports 上，当 VM B 回复了泛洪请求后，Node A 会学习到一条关于 VM B 的流表，
-流表的内容是 VM B 的 Node Tunnel 信息。通过这种方式，避免了以后的广播请求（因为以后的广播请求没有了洪泛过程，直接发到了相应的 Node 上）。
-通过这种方式虽然我们优化了广播流量，但是 ARP 呢？。还是举上面的例子，Node A 学习到了关于 VM B 的流表，
+流表的内容是 VM B 的 Node Tunnel 信息（会话学习）。通过这种方式，避免了以后的广播请求（因为以后的广播请求没有了洪泛过程，直接发到了相应的 Node 上）。
+通过这种方式虽然我们优化了 VXLAN 广播流量，但是 ARP 呢？。还是举上面的例子，Node A 学习到了关于 VM B 的流表，
 当 VM A 和 VM B 通信时，Node A 将 VM A 的 ARP 请求发到了 Node B 上，但是 Node B 上可能不仅仅有 VM B 一个机器，Node B 上依旧收到了多余的 ARP 请求。
-因此 AR P的问题依旧没有解决。
-
+因此 ARP 的问题依旧没有解决。
 
  在有了 ARP Responder 后，由于 Neutron 数据库中保存了网络中的所有数据，此时在 Node C 上创建 VM C，那么，Node A 和 Node B 上的 OpenvSwitch Bridge br-tun
 上会添加一条流表：VM C 在 Node C 上，IP 地址是 x.x.x.x，MAC 地址是 y.y.y.y.y.y。这样一来，VM A，VM B 和 VM C 通信时，br-tun 作为 ARP Responder 回复各自的 ARP 请求。
