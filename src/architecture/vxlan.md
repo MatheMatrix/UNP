@@ -321,18 +321,30 @@ Bonding 支持 7 种模式的链路绑定，目前我们推荐使用的是 mode 
 
 ### 部署
 
-主要的配置文件涉及 /etc/neutron/plugins/ml2/ml2_conf.ini，最基本的配置项类似如下：
+主要的配置文件涉及控制节点 /etc/neutron/plugins/ml2/ml2_conf.ini 和网络、计算节点的 openvswitch_agent.ini 最基本的配置项类似如下：
 
 ```
+ml2_conf.ini
 [ml2]
 tenant_network_types = vxlan, ……
 type_drivers = vxlan, ……
 mechanism_drivers = openvswitch, l2pop, ……
 
 [ml2_type_vxlan]
-……
+...
 vni_ranges = 200:14000
-……
+...
+
+openvswitch_agent.ini
+[ovs]
+local_ip = TUNNEL_INTERFACE_IP_ADDRESS
+...
+
+[agent]
+tunnel_types = vxlan
+enable_distributed_routing = True
+l2_population = True
+arp_responder = True
 ```
 
 具体的完整部署参考 [部署](../deployments/preface.md)。

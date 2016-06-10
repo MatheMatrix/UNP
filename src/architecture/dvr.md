@@ -48,7 +48,7 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
  - SNAT router 无法很灵活的迁移到一般的计算节点上。因为其 l3 agent 类型是不一样的；
  - 目前 DVR 场景无法使用 VIP 类应用，也就是说，如果需要使用 keepalived、虚拟路由器等应用（参考[生态-Hillstone-云界]）时，是不能创建 DVR 虚拟路由器的。原因是当创建虚拟网卡并绑定浮动 IP 时，Neutron 无法确定如何绑定浮动 IP；
  - 目前 DVR 场景下如果使用 VPNaaS 的话，需要连入 VPN 的虚拟机不能绑定浮动 IP；
- - 目前 DVR 场景下每个计算节点将消耗一个浮动 IP。
+ - 目前 DVR 场景下每个计算节点将消耗一个浮动 IP（减少交换机上 MAC 转发表数量，避免大规模部署时出现物理网络问题）。
 
 目前来看，我们的应对方案主要是以下几点：
  - 同时提供 L3 HA 的虚拟路由器保证特殊业务可以正确运行
@@ -105,6 +105,64 @@ DVR 的基本思路就是将网关分散到各个计算节点，计算节点上�
 ![deploy_dvr][6]
 
 值得注意的我们的 HA 方案对 Underlay 网络的要求，最佳实践是 Pacemaker 需要和管理网、业务网和 IPMI 网均通。
+
+与 DVR 相关的配置有：
+
+控制节点：
+```python
+neutron.conf
+[DEFAULT]
+core_plugin = ml2
+service_plugins = router
+router_distributed = True
+...
+
+ml2_conf.ini
+[ml2]
+...
+mechanism_drivers = openvswitch,l2population
+extension_drivers = port_security
+```
+
+网络节点：
+```python
+openvswitch_agent.ini
+
+...
+[agent]
+tunnel_types = gre,vxlan
+enable_distributed_routing = True
+l2_population = True
+arp_responder = True
+
+l3_agent.ini
+[DEFAULT]
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+external_network_bridge =
+agent_mode = dvr_snat
+
+dhcp_agent.ini
+[DEFAULT]
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+enable_isolated_metadata = True
+```
+
+计算节点：
+```python
+openvswitch_agent.ini
+
+...
+[agent]
+enable_distributed_routing = True
+l2_population = True
+arp_responder = True
+
+l3_agent.ini
+[DEFAULT]
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+...
+agent_mode = dvr
+```
 
 #### FAQ
 
