@@ -114,13 +114,12 @@ neutron.conf
 [DEFAULT]
 core_plugin = ml2
 service_plugins = router
-allow_overlapping_ips = True
 router_distributed = True
+...
 
 ml2_conf.ini
 [ml2]
-type_drivers = flat,vlan,gre,vxlan
-tenant_network_types = vlan,gre,vxlan
+...
 mechanism_drivers = openvswitch,l2population
 extension_drivers = port_security
 ```
@@ -128,10 +127,8 @@ extension_drivers = port_security
 网络节点：
 ```python
 openvswitch_agent.ini
-[ovs]
-local_ip = TUNNEL_INTERFACE_IP_ADDRESS
-bridge_mappings = vlan:br-vlan,external:br-ex
 
+...
 [agent]
 tunnel_types = gre,vxlan
 enable_distributed_routing = True
@@ -153,12 +150,9 @@ enable_isolated_metadata = True
 计算节点：
 ```python
 openvswitch_agent.ini
-[ovs]
-local_ip = TUNNEL_INTERFACE_IP_ADDRESS
-bridge_mappings = physnet3:ovsbr3
 
+...
 [agent]
-tunnel_types = vxlan
 enable_distributed_routing = True
 l2_population = True
 arp_responder = True
@@ -166,7 +160,7 @@ arp_responder = True
 l3_agent.ini
 [DEFAULT]
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
-external_network_bridge =
+...
 agent_mode = dvr
 ```
 
