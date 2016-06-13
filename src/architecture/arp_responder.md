@@ -22,13 +22,14 @@
 
 ### ARP Proxy
 
-Proxy ARP 就是通过一个主机（通常是Router）来作为指定的设备对另一个设备作出 ARP 的请求进行应答。
+ARP Proxy 就是通过一个主机（通常是Router）来作为指定的设备对另一个设备作出 ARP 的请求进行应答。
 
- 简单的说，当机器发送 ARP 请求时，ARP Proxy 捕捉到此请求，并进行回复。
+简单的说，当机器发送 ARP 请求时，ARP Proxy 捕捉到此请求，并进行 ARP 回复。
 
 ### ARP Responder
-Neutron 通过 OpenvSwitch Bridge Br-tun 实现了 ARP Responder 的功能。由于 Neutron 数据库中存有所有 Port 的信息（IP，MAC信息），
-因此可以将这些消息分发到各个 OVS agent 上，实现 ARP Responder 的功能。
+Neutron 通过 OpenvSwitch Bridge Br-tun 实现了 ARP Responder 的功能。由于 Neutron 数据库中存有所有 Port 的信息（
+IP，MAC 和所在 Host 信息），
+因此可以将这些消息分发到各个 OVS agent 上，通过在 OpenvSwitch Bridge Br-tun 上的流表实现 ARP Responder 的功能。
 ARP Responder 的一条典型流表规则如下：
 ```
  cookie=0x89509acbf7d4624a, duration=62261.842s, table=21, n_packets=0,
@@ -63,7 +64,7 @@ ARP Responder 的一条典型流表规则如下：
  
 
 ###ARP Responder 的使用场景和限制
-通过 ARP Responder，Neutron 将虚拟机的 ARP 请求抑制在本计算节点，从而减少 ARP 广播。
+通过 ARP Responder，Neutron 将虚拟机的 ARP 请求抑制在本计算节点，从而减少计算节点 VTEP 之间的 ARP 广播。
 
  目前来说，ARP Responder 目前仍然有一些问题：
  - 对消息队列的使用加重，增加了相关 Topic 的消费
@@ -89,7 +90,7 @@ dl_dst=fa:16:3e:09:f7:f6,actions=strip_vlan,set_tunnel:0x1d,output:5
  在 Neutron Server 节点修改 plugin.ini：
 ```
 [ml2]
-mechanism_drivers = ...,l2population,...
+mechanism_drivers = openvswitch,l2population
 ```
 
 在计算/网络节点修改 plugins/ml2/openvswitch_agent.ini
