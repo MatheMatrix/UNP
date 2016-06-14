@@ -18,6 +18,7 @@
    * [VXLAN + VLAN 自服务模型](src/deployment/vxlan_vlan.md)
    * [Neutron 配置](src/deployment/neutron_conf.md)
    * [UnitedStack 远程支持接入](src/deployment/remote_support.md)
+   * [接入层高可用](src/deployment/access_ha.md)
 * [性能](src/performance/preface.md)
    * [DVR场景下虚拟机的性能](src/performance/dvr.md)
    * [HA场景下虚拟机的性能](src/performance/ha.md)
