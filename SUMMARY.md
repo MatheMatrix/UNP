@@ -14,6 +14,7 @@
 * [功能](src/funcs/preface.md)
    * [RBAC Networks](src/funcs/rbac_networks.md)
 * [提升](src/Enhancement/preface.md)
+   * [保持 DNS Nameservers 一致性](src/Enhancement/keep_dns_consistency.md)
 * [部署](src/deployment/preface.md)
    * [VXLAN + VLAN 自服务模型](src/deployment/vxlan_vlan.md)
    * [Neutron 配置](src/deployment/neutron_conf.md)
