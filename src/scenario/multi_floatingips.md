@@ -101,7 +101,10 @@ default via 20.20.20.1 dev eth1
 #### 使配置永久生效
 
   在 Linux 命令行上进行了上述配置后，当虚拟机重启或者重新 DHCP 后配置可能会消失，为了使配置永久生效，
-因此需要手动修改配置文件，添加上述配置的默认路由和高级路由的配置信息。
+因此需要手动修改配置文件，添加上述配置的默认路由和高级路由的配置信息。下面介绍 Ubuntu 和 CentOS 的
+配制方法。
+
+##### Ubuntu 15.05
 
   在 `/etc/network/interfaces` 添加如下内容即可：
 ```
@@ -114,6 +117,17 @@ iface eth1 inet dhcp
     post-up ip route add 30.30.30.0/24 dev eth1 src 20.20.20.16 table 20
     post-up ip route add default via 20.20.20.1 table 20
     post-up ip rule add from 20.20.20.16/32 table 20
+```
+
+##### CentOS 6.5
+  在 `/etc/sysconfig/network-scripts` 下添加如下文件即可`文件名随意`：
+```
+$ cat rule-eth2
+from 10.0.12.70 table 218
+
+$ cat route-eth2
+10.0.12.0/24 dev eth2 table 218
+default via 10.0.12.1 table 218
 ```
 
 [1]: ../../images/scenario/multi_fips.png
