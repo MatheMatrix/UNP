@@ -13,6 +13,7 @@
    * [SRIOV](src/architecture/sriov.md)
 * [功能](src/funcs/preface.md)
    * [RBAC Networks](src/funcs/rbac_networks.md)
+   * [Internal DNS](src/funcs/internal_dns.md)
 * [提升](src/Enhancement/preface.md)
 * [部署](src/deployment/preface.md)
    * [VXLAN + VLAN 自服务模型](src/deployment/vxlan_vlan.md)
