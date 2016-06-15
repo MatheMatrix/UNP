@@ -57,7 +57,9 @@ changzhi@stack:~/devstack$ neutron subnet-show 1a2d261b-b233-3ab9-902e-88576a82a
 
 当更新了 DNS Nameservers 的顺序，对于本 Subnet 中已经存在的虚拟机
 不会立刻按照新的顺序更新 DNS Nameservers。只有当 Subnet 中的虚拟机 DHCP 或者进行 DHCP 续约时，
-虚拟机才会按照新的顺序获取 DNS Nameservers。
+由 DHCP Server 推送给虚拟机，虚拟机才会按照新的顺序获取 DNS Nameservers。
+注：平台默认的 DHCP 租约时间是24h ，虚拟机中的 DHCP Client 一般会在租约时间的一半时进行租约请求，
+所以预期默认在 12h 内更新。
 比如，以 Cirros 镜像的虚拟机为例，当前虚拟机的 resolv.conf 如下：
 ```
 $ cat /etc/resolv.conf
