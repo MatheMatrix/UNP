@@ -128,3 +128,5 @@ PING my.openstacklocal (10.10.10.31) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.339/0.339/0.339/0.000 ms
 ```
+注：虚拟网卡的 `dns_name` 支持更新操作，可以通过 `neutron port-update [port-id] --dns_name [dns_name]`
+更新 `dns_name` 属性。
