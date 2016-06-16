@@ -68,7 +68,7 @@ nameserver 1.1.1.1
 nameserver 2.2.2.2
 nameserver 3.3.3.3
 ```
-重启网络服务后，该文件内容如下：
+重启虚拟机网络服务或等待 12 小时后，该文件内容如下：
 ```
 $ cat /etc/resolv.conf
 search openstacklocal
