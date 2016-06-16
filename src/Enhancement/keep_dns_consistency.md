@@ -1,15 +1,15 @@
-### 保持 DNS Nameservers 一致性
+## 保持 DNS Nameservers 一致性
 
 ---
 
-#### 简介
+### 简介
 
 在 Neutron 的 Subnets 中，当创建子网指定 DNS Nameservers 或者
 更新 Subnet 的 DNS Nameservers 属性时，保持了 DNS Nameservers 顺序的一致性。
 也就是说，Neutron Subnet 中的 DNS Nameservers 的顺序会和虚拟机获得的
 DNS Nameservers 顺序保持一致。
 
-#### 更新 DNS Nameservers
+### 更新 DNS Nameservers
 
 ```
 
