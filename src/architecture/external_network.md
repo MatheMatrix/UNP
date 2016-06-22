@@ -83,7 +83,6 @@ Created a new floatingip:
 | floating_network_id | f3e296b8-073c-4a49-9242-2dfaf9d889b5 |
 | id                  | 9a345d7a-f274-4fc6-aa13-4e4cc60e044b |
 | port_id             |                                      |
-| rate_limit          | 1024                                 |
 | router_id           |                                      |
 | status              | DOWN                                 |
 | tenant_id           | ef979882f1954a0fa4ce7daf244aa557     |
