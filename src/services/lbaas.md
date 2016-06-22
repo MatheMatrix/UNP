@@ -5,7 +5,7 @@
 LBaaS 是 Neutron 中的高级服务，使用户通过 Neutron 的 API 完成云平台的负载均衡需求。
 在设计之初就考虑到了数据模型与Driver 实现的解耦， OpenStack Operator 能够指定不同的后端
 (HAProxy, Octavia)，UnitedStack(R) UNP 通过和合作伙伴努力，还添加了
-F5 BIG-IP (TM)的后端，此外 BIHG-IP VE (TM) 版和 Citrix NetScaler(TM) 也正在开发中，
+F5 BIG-IP (TM)的后端，此外 BIG-IP VE (TM) 版和 Citrix NetScaler(TM) 也正在开发中，
 这样能够用统一的接口操作和控制不同的负载均衡设备。
 
 ## 架构
@@ -42,7 +42,7 @@ Loadbalancer 接收到的请求会以以下三种方式中的一种进行请求�
 
 ## 服务部署
 
-详细的部署架构参考部署环节和unp-config 相关配置
+详细的部署架构参考部署环节和 unp-config 相关配置
 
 ### Neutron API server
 
