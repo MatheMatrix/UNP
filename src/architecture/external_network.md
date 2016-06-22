@@ -70,6 +70,26 @@ Created a new network:
 +---------------------------+--------------------------------------+
 ```
 
+Neutron 支持创建多个外部网络（创建该网络的方式如上所示）。
+在上述外部网络中创建一个 FloatingIP：
+```
+[root@server-233 ~(keystone_admin)]# neutron floatingip-create f3e296b8-073c-4a49-9242-2dfaf9d889b5
+Created a new floatingip:
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| fixed_ip_address    |                                      |
+| floating_ip_address | 2.2.2.81                             |
+| floating_network_id | f3e296b8-073c-4a49-9242-2dfaf9d889b5 |
+| id                  | 9a345d7a-f274-4fc6-aa13-4e4cc60e044b |
+| port_id             |                                      |
+| rate_limit          | 1024                                 |
+| router_id           |                                      |
+| status              | DOWN                                 |
+| tenant_id           | ef979882f1954a0fa4ce7daf244aa557     |
++---------------------+--------------------------------------+
+```
+
 ### External Network 的工作原理
 
 #### Local 类型的 External Network 工作原理
