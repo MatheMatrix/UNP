@@ -15,7 +15,9 @@ Neutron 允许创建多个 External Networks。
 
 ### 不同类型的 External Networks
 
- External Network 的典型创建方式分为以下两种：
+ External Network 支持两种类型：Local 类型和 VLAN 类型。
+
+ 默认推荐 VLAN 类型的 External Network。
 
 #### Local 类型的 External Network
 
@@ -42,6 +44,17 @@ Created a new network:
 ```
 
 #### VLAN 类型的 External Network
+ 修改配置文件`plugins/ml2/ml2_conf.ini`中的`external_network_type` 属性，
+ 使之创建的外部网路为 VLAN 类型：
+ ```
+ # (StrOpt) Default network type for external networks when no provider
+ # attributes are specified. By default it is None, which means that if
+ # provider attributes are not specified while creating external networks
+ # then they will have the same type as tenant networks.
+ # Allowed values for external_network_type config option depend on the
+ # network type values configured in type_drivers config option.
+ external_network_type = vlan
+ ```
  创建 VLAN 类型的 External Network 和 Neutron 创建 VLAN 网络类似，只需指定某些特定的参数即可，比如：
 
 ```
