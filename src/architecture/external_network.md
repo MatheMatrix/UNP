@@ -84,6 +84,23 @@ Created a new network:
 ```
 
 Neutron 支持创建多个外部网络（创建该网络的方式如上所示）。
+
+在创建 FloatingIP 之前，需要将路由器开启公网网关，过程如下：
+```
+查看外部网络：
+[root@server-233 ~(keystone_admin)]# neutron net-list --router:external=True
++--------------------------------------+--------+-------------------------------------------------+
+| id                                   | name   | subnets                                         |
++--------------------------------------+--------+-------------------------------------------------+
+| 8a93ea75-87cd-4677-ba02-8c5989ad0843 | public | 0caa93e6-a8c4-41a1-a342-5f2d21f876bc 2.2.0.0/16 |
++--------------------------------------+--------+-------------------------------------------------+
+注：如果集群中有多个外部网络时，此处会列出所有可用的外部网络。
+指定外部网络并将路由器开启公网网关：
+[root@server-233 ~(keystone_admin)]# neutron router-gateway-set [router-id] \
+8a93ea75-87cd-4677-ba02-8c5989ad0843
+Set gateway for router [router-id]
+```
+
 在上述外部网络中创建一个 FloatingIP：
 ```
 [root@server-233 ~(keystone_admin)]# neutron floatingip-create f3e296b8-073c-4a49-9242-2dfaf9d889b5
