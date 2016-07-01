@@ -33,6 +33,7 @@
    * [Agent重启对数据层的影响](src/stability/agent_restart.md)
    * [升级对API停服时间减少](src/stability/upgrade.md)
 * [高级服务](src/advanced_service/preface.md)
+    * [LBaaS](src/services/lbaas.md)
 * [系统](src/system/preface.md)
    * [LLDP](src/system/lldp.md)
    * [优化](src/system/optimization.md)
