@@ -15,7 +15,9 @@ Neutron 允许创建多个 External Networks。
 
 ### 不同类型的 External Networks
 
- External Network 的典型创建方式分为以下两种：
+ External Network 支持两种类型：Local 类型和 VLAN 类型。
+
+ 默认推荐 VLAN 类型的 External Network。
 
 #### Local 类型的 External Network
 
@@ -42,6 +44,17 @@ Created a new network:
 ```
 
 #### VLAN 类型的 External Network
+ 修改配置文件`plugins/ml2/ml2_conf.ini`中的`external_network_type` 属性，
+ 使之创建的外部网路为 VLAN 类型：
+ ```
+ # (StrOpt) Default network type for external networks when no provider
+ # attributes are specified. By default it is None, which means that if
+ # provider attributes are not specified while creating external networks
+ # then they will have the same type as tenant networks.
+ # Allowed values for external_network_type config option depend on the
+ # network type values configured in type_drivers config option.
+ external_network_type = vlan
+ ```
  创建 VLAN 类型的 External Network 和 Neutron 创建 VLAN 网络类似，只需指定某些特定的参数即可，比如：
 
 ```
@@ -68,6 +81,42 @@ Created a new network:
 | subnets                   |                                      |
 | tenant_id                 | ef979882f1954a0fa4ce7daf244aa557     |
 +---------------------------+--------------------------------------+
+```
+
+Neutron 支持创建多个外部网络（创建该网络的方式如上所示）。
+
+在创建 FloatingIP 之前，需要将路由器开启公网网关，过程如下：
+```
+查看外部网络：
+[root@server-233 ~(keystone_admin)]# neutron net-list --router:external=True
++--------------------------------------+--------+-------------------------------------------------+
+| id                                   | name   | subnets                                         |
++--------------------------------------+--------+-------------------------------------------------+
+| 8a93ea75-87cd-4677-ba02-8c5989ad0843 | public | 0caa93e6-a8c4-41a1-a342-5f2d21f876bc 2.2.0.0/16 |
++--------------------------------------+--------+-------------------------------------------------+
+注：如果集群中有多个外部网络时，此处会列出所有可用的外部网络。
+指定外部网络并将路由器开启公网网关：
+[root@server-233 ~(keystone_admin)]# neutron router-gateway-set [router-id] \
+8a93ea75-87cd-4677-ba02-8c5989ad0843
+Set gateway for router [router-id]
+```
+
+在上述外部网络中创建一个 FloatingIP：
+```
+[root@server-233 ~(keystone_admin)]# neutron floatingip-create f3e296b8-073c-4a49-9242-2dfaf9d889b5
+Created a new floatingip:
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| fixed_ip_address    |                                      |
+| floating_ip_address | 2.2.2.81                             |
+| floating_network_id | f3e296b8-073c-4a49-9242-2dfaf9d889b5 |
+| id                  | 9a345d7a-f274-4fc6-aa13-4e4cc60e044b |
+| port_id             |                                      |
+| router_id           |                                      |
+| status              | DOWN                                 |
+| tenant_id           | ef979882f1954a0fa4ce7daf244aa557     |
++---------------------+--------------------------------------+
 ```
 
 ### External Network 的工作原理
