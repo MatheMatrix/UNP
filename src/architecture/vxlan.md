@@ -238,7 +238,7 @@ Neutron VXLAN network 的 segmentation_id 属性即为 VXLAN 的 VNI。
 
 #### Conversational Learning
 
-当然来自未知的位置报文时，Neutron 通过 OVS 的 learn 动作可以实现对流的会话学习（Conversational Learning）。在 Open vSwitch 的 br-tun 网桥上，存在一条学习规则如下：
+当收到来自未知位置的报文时，Neutron 通过 OVS 的 learn 动作可以实现对流的会话学习（Conversational Learning）。在 Open vSwitch 的 br-tun 网桥上，存在一条学习规则如下：
 
 `cookie=0xbf36e76cf0946b9e, duration=16123.771s, table=10, n_packets=419, n_bytes=40096, idle_age=10442, priority=1 actions=learn(table=20,hard_timeout=300,priority=1,cookie=0xbf36e76cf0946b9e,NXM_OF_VLAN_TCI[0..11],NXM_OF_ETH_DST[]=NXM_OF_ETH_SRC[],load:0->NXM_OF_VLAN_TCI[],load:NXM_NX_TUN_ID[]->NXM_NX_TUN_ID[],output:NXM_OF_IN_PORT[]),output:1`
 
@@ -253,7 +253,8 @@ output:NXM_OF_IN_PORT[]，从当前入口发出。
 
 通过 Conversational Learning 的另一个好处是，由于 Conversational Learning 和 L2 Population 都作用在了
 OVS bridge br-tun table 20 上，那么，如果由于某些意外情况导致 L2 Population 无法正常下发流表，还可通过
-Conversational Learning 的形式使得 OVS 以被动的方式（Conversational Learning）优化网络流向。
+Conversational Learning 的形式使得 OVS 以被动的方式（Conversational Learning）优化网络流向，具体的做法是
+通过 OVS brirdge br-tun table 20 ，将请求报文通过 Head-end Replication 的方式发送往除本地外的各个 VTEP 。
 
 #### Flooding VTEP
 
