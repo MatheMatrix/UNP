@@ -21,6 +21,7 @@
    * [Neutron 配置](src/deployment/neutron_conf.md)
    * [UnitedStack 远程支持接入](src/deployment/remote_support.md)
    * [接入层高可用](src/deployment/access_ha.md)
+   * [云平台与企业内网打通](src/deployment/yun_ping_tai_yu_qi_ye_nei_wang_da_tong.md)
 * [性能](src/performance/preface.md)
    * [DVR场景下虚拟机的性能](src/performance/dvr.md)
    * [HA场景下虚拟机的性能](src/performance/ha.md)
