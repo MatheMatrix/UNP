@@ -82,7 +82,7 @@ neutron.conf
 vi /etc/neutron/neutron.conf
 ...
 [DEFAULT]
-service_plugins = [already defined plugins],LOADBALANCERV2:F5Networks:f5lbaasdriver.v2.bigip.driver_v2.F5DriverV2:default
+service_plugins = [already defined plugins],neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
 ...
  ```
 ```python
