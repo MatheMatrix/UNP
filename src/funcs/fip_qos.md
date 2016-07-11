@@ -14,6 +14,9 @@ ovs-vsctl set interface tap0 ingress_policing_burst=100
 
 本文主要说明针对 FloatingIP 进行的 QoS。
 
+默认的，对于新创建的 FloatingIP 限速是 1024 Kb (1Mbit)，对于虚拟路由器的 SNAT 来说，
+默认限速是 5Mb，即：虚拟路由器 SNAT 流量的共享带宽是 5Mb。
+
 #### 实现原理
 
 通过 Linux TC (Traffic Control) 实现针对 FloatingIP 的 QoS。
