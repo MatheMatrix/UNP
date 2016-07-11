@@ -14,6 +14,7 @@
 * [功能](src/funcs/preface.md)
    * [RBAC Networks](src/funcs/rbac_networks.md)
    * [Internal DNS](src/funcs/internal_dns.md)
+   * [FloatingIP QoS](src/funcs/fip_qos.md)
 * [提升](src/Enhancement/preface.md)
    * [保持 DNS Nameservers 一致性](src/Enhancement/keep_dns_consistency.md)
 * [部署](src/deployment/preface.md)
