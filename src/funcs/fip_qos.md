@@ -68,7 +68,7 @@ filter 用来将用户划入到具体的控制策略中（即不同的class中�
 
 ### API 使用和测试
 
-FloatingIP 的 QoS 目前支持通过 Neutronclient 形式修改带宽，命令如下：
+FloatingIP 的 QoS 目前支持通过 Neutron-client 形式修改带宽，命令如下：
 ```
 [root@server-233 ~(keystone_admin)]# neutron update-floatingip-ratelimit eb0fa229-9b42-4db3-8789-d2d94ed57fbb 20480
 Update floating IP eb0fa229-9b42-4db3-8789-d2d94ed57fbb rate limit 20480
