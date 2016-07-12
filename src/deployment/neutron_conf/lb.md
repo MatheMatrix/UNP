@@ -1,4 +1,19 @@
-### neutron_lbaas.conf
+### Neutron LBaaS Agent
+
+#### 启动进程
+
+```
+/usr/bin/python2 /usr/bin/neutron-lbaasv2-agent \
+--config-file /usr/share/neutron/neutron-dist.conf \
+--config-file /usr/share/neutron/neutron-lbaas-dist.conf \
+--config-file /etc/neutron/neutron.conf \
+--config-file /etc/neutron/lbaas_agent.ini \
+--config-dir /etc/neutron/conf.d/common \
+--config-dir /etc/neutron/conf.d/neutron-lbaasv2-agent \
+--log-file /var/log/neutron/lbaas-agent.log
+```
+
+#### neutron_lbaas.conf
 
 ```
 [DEFAULT]

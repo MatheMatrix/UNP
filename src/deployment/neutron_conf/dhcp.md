@@ -1,4 +1,17 @@
-### dhcp.conf
+### Neutron DHCP Agent
+
+#### 启动进程
+```
+/usr/bin/python2 /usr/bin/neutron-dhcp-agent \
+--config-file /usr/share/neutron/neutron-dist.conf \
+--config-file /etc/neutron/neutron.conf \
+--config-file /etc/neutron/dhcp_agent.ini \
+--config-dir /etc/neutron/conf.d/common \
+--config-dir /etc/neutron/conf.d/neutron-dhcp-agent \
+--log-file /var/log/neutron/dhcp-agent.log
+```
+
+#### dhcp.conf
 
 ```
 [DEFAULT]

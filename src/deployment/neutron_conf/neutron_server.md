@@ -1,5 +1,21 @@
 ### Neutron Server
 
+#### 启动进程
+```
+/usr/bin/python2 /usr/bin/neutron-server \
+--config-file /usr/share/neutron/neutron-dist.conf \
+--config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf \
+--config-file /etc/neutron/plugin.ini --config-dir /etc/neutron/conf.d/common \
+--config-dir /etc/neutron/conf.d/neutron-server \
+--log-file /var/log/neutron/server.log
+```
+
+#### 需要注意的参数
+
+1. `router_distributed`。当该选项为 `True` 时，默认创建 DVR 路由器。
+2. `l3_ha`。当该选项为 `True` 时，默认创建 HA 路由器，当该选项和 `router_distributed` 都为
+`True` 时，默认创建 HA & DVR 路由器，但是当前 Neutron 版本不支持创建该类型路由器。
+
 #### neutron.conf
 ```
 [DEFAULT]

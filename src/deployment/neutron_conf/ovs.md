@@ -1,4 +1,23 @@
-### openvswitch_agent.ini
+### Neutron OpenvSwitch Agent
+
+#### 启动进程
+```
+/usr/bin/python2 /usr/bin/neutron-openvswitch-agent \
+--config-file /usr/share/neutron/neutron-dist.conf \
+--config-file /etc/neutron/neutron.conf \
+--config-file /etc/neutron/plugins/ml2/openvswitch_agent.ini \
+--config-dir /etc/neutron/conf.d/common \
+--config-dir /etc/neutron/conf.d/neutron-openvswitch-agent \
+--log-file /var/log/neutron/openvswitch-agent.log
+```
+
+#### 需要注意的参数
+
+1. `local_ip`。本地 VXLAN 端口的 IP 地址。该地址必须在本地存在。
+
+2. `bridge_mappings`。物理网桥映射关系。如果需要多个对应关系，需用`,`隔开。
+
+#### openvswitch_agent.ini
 
 ```
 [ovs]
