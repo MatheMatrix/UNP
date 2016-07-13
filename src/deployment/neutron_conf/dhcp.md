@@ -11,6 +11,13 @@
 --log-file /var/log/neutron/dhcp-agent.log
 ```
 
+#### 需要注意的参数
+1. `dnsmasq_dns_servers`。当 dnsmasq 进程无法完成 DNS 解析时，会 forward 到该地址上进行 DNS 解析。
+2. `dhcp_domain`。构建 hostnames 时使用的 domain，若需要制定 hostname 创建虚拟机，需要配置此参数。
+3. `dnsmasq_base_log_dir`。配置 DHCP 和 DNS 解析时产生日志的存放路径。
+4. `interface_driver`。配置成 neutron.agent.linux.interface.OVSInterfaceDriver
+5. `dhcp_driver`。 配置成 neutron.agent.linux.dhcp.Dnsmasq
+
 #### dhcp.conf
 
 ```

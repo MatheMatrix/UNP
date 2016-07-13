@@ -23,3 +23,10 @@ Neutron 配置主要涉及 Neutron Server 以及各个 agent 配置文件的变�
 ├── services_lbaas.conf
 └── vpn_agent.ini
 ```
+
+### 需要注意的参数
+
+下面列举一些 Neutron 各个 agent 都要配置的，并且配置相同的选项：
+
+1. `interface_driver` 配置成 neutron.agent.linux.interface.OVSInterfaceDriver
+2. `log_agent_heartbeats` 配置成 True
