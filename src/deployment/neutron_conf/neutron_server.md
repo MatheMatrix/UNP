@@ -15,6 +15,22 @@
 1. `router_distributed`。当该选项为 `True` 时，默认创建 DVR 路由器。
 2. `l3_ha`。当该选项为 `True` 时，默认创建 HA 路由器，当该选项和 `router_distributed` 都为
 `True` 时，默认创建 HA & DVR 路由器，但是当前 Neutron 版本不支持创建该类型路由器。
+详情可参看 [DVR](../../architecture/dvr.md)
+3. `dns_domain`。定义 OpenStack 集群中虚拟机的 domain。例如，当该选项配置成 ustack.com 后，
+创建虚拟机的 domain 都以 ustack.com 结尾，并且在创建虚拟网卡时可以指定 dns_name，如：
+`neutron port-create [net-id] --dns_name=my_vm`，使用此虚拟网卡创建的虚拟机的 hostname 为
+`my_vm.ustack.com`。
+4. `dhcp_lease_duration`。虚拟机 DHCP 的续约时间，默认是 86400 s，即一天。
+5. `allow_pagination=True` 和 `allow_sorting=True` 。允许通过 API 获取 Neutron 资源时可以分页或者排序。
+6. `max_fixed_ips_per_port = 20`。一个虚拟网卡上最多可以配置多少个 IP 地址。
+7. `api_workers = 8` 。Neutron Server 启动 8 个进程完成 API 的响应。
+8. `rpc_workers=8` 。Neutron Server 启动 8 个进程完成 RPC 的响应。
+9. `max_header= 81920`。Openstack Keystone 的 PKI token 从 G 版本开始支持，PKI token 相比如传统的 UUID 的 token，
+长度要增加不少，而且如果 Keystone 的 endpoint 和 service catalog 越多，相应的 token 长度都会有所增加。
+在 python 的 eventlet 默认支持长度有个限制，如果要更长的header，需要对该属性就行修改。关于 token 长度
+过长引发 bug 可参考：[Token auth fails when token is larger than 8k](https://bugs.launchpad.net/keystone/+bug/1190149)
+10. `max_pool_size=30`。允许建立的最大 SQL 连接数。
+11. `max_overflow=40`。允许在 max_pool_size 上在超过 40 个 SQL 连接。
 
 #### neutron.conf
 ```
