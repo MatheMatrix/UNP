@@ -64,10 +64,16 @@ service_provider=LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_dri
 硬件方案或 Service VM 方案有一定差距。关于高性能负载均衡设备，请参考[生态](../ecosystem)
 相关章节
 
-### Neutron LBaaS Agent
+如果原来没有 neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2 这个 service_plugin 的话，修改后需要升级数据库：
 
-如果选用 HAProxy 作为 back-end，则需要在网络节点上部署和启动 neutron-lbaas-agent；
-如果选用的是其他的 back-end(F5, Octavia 等)，则可能不需要部署neutron-lbaas-agent，
+```
+neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head
+```
+
+### Neutron LBaaSv2 Agent
+
+如果选用 HAProxy 作为 back-end，则需要在网络节点上部署和启动 neutron-lbaasv2-agent；
+如果选用的是其他的 back-end(F5, Octavia 等)，则可能不需要部署 neutron-lbaasv2-agent，
 根据 back-end 的文档做具体调整
 
 ```
@@ -75,6 +81,8 @@ service_provider=LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_dri
 
 device_driver = neutron_lbaas.drivers.haproxy.namespace_driver.HaproxyNSDriver
 ```
+
+注意需要启动的是 v2 的 agent，如果出现了 lbaas-agent 需要关掉。
 
 
 [1]: ../../images/services/lbaas-architecture.png
