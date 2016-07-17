@@ -13,9 +13,19 @@
 
 #### 需要注意的参数
 1. `dnsmasq_dns_servers`。递归 DNS 服务器，即当 dnsmasq 进程无法完成 DNS 解析时，会 forward 到该地址上进行 DNS 解析。
-    可将此参数配置成 1.2.4.8,114.114.114.114
+    建议使用运营商给出的 DNS 地址，或者统一配置成 114DNS 或 DNSPOD 等厂商提供的 DNS：114.114.114.114, 119.29.29.29。
 2. `dnsmasq_base_log_dir`。配置 DHCP 和 DNS 解析时产生日志的存放路径。一般不配置此参数，
-    如客户有需要，将此选项配置成存放日志的路径。
+    如客户有需要，将此选项配置成存放日志的路径，例如配置成 `/tmp/dnsmasq/`。并且建议配置相关 logrotate，
+    添加 logrotate 配置文件 `/etc/logrotate.d/openstack-neutron-dnsmasq` ，内容如下：
+    ```
+    /tmp/dnsmasq/* {
+        rotate 14
+        size 10M
+        missingok
+        compress
+        copytruncate
+    }
+    ```
 3. `interface_driver`。一般不需要修改，配置成 neutron.agent.linux.interface.OVSInterfaceDriver
 4. `dhcp_driver`。 一般不需要修改，配置成 neutron.agent.linux.dhcp.Dnsmasq
 5. `log_agent_heartbeats`。设置成 True。该选项会在 Agent 进行上报状态时进行日志的打印。
