@@ -17,6 +17,21 @@ ovs-vsctl set interface tap0 ingress_policing_burst=100
 默认的，对于新创建的 FloatingIP 限速是 1024 Kb (1Mbit)，对于虚拟路由器的 1:SNAT 来说，
 默认限速是 5Mb，即：虚拟路由器 SNAT 流量的共享带宽是 5Mb（目前无法通过 API 修改）。
 
+实现该功能的 Neutron 软件包版本：
+
+ - python-neutron-7.1.1.1-2.el7.centos.ustack.noarch
+ - openstack-neutron-7.1.1.1-2.el7.centos.ustack.noarch
+
+配置选项：
+
+ - 置 `neutron.conf` 中的 `enable_fip_qos` 选项为 `True`。即：打开 FloatingIP QoS 功能。
+ - 置 `l3_agent.conf` 中的 `default_router_gw_rate_limit` 选项为 5 (若无特殊需要，无需修改，该选项默认值即为 5)。即：路由器开启公网网关的共享带宽为 5Mb。
+
+升级影响：
+
+ 对于使用过 7.1.1.1 之前版本的 Neutron 来说，升级到 7.1.1.1 版本后，不影响之前的 FloatingIP 使用（无限速），
+对于所有的 FloatingIP 都可通过 API 调整 FloatingIP 的 QoS。
+
 #### 实现原理
 
 通过 Linux TC (Traffic Control) 实现针对 FloatingIP 的 QoS。
@@ -72,6 +87,34 @@ FloatingIP 的 QoS 目前支持通过 Neutron-client 形式修改带宽，命令
 ```
 [root@server-233 ~(keystone_admin)]# neutron update-floatingip-ratelimit eb0fa229-9b42-4db3-8789-d2d94ed57fbb 20480
 Update floating IP eb0fa229-9b42-4db3-8789-d2d94ed57fbb rate limit 20480
+```
+
+通过 Curl 的形式修改带宽：
+
+REQ:
+```
+curl -g -i -X PUT \
+http://10.0.44.233:9696/v2.0/floatingips/eb0fa229-9b42-4db3-8789-d2d94ed57fbb/update_floatingip_ratelimit.json \
+-H "User-Agent: python-neutronclient" \
+-H "Content-Type: application/json" \
+-H "Accept: application/json" \
+-H "X-Auth-Token: {SHA1}28aacfc5724b41b6d3ef84728fc5655de778a26a" \
+-d '{"floatingip": {"rate_limit": 20480}}'
+```
+
+RESP BODY: 
+```
+{
+    "floating_network_id": "8a93ea75-87cd-4677-ba02-8c5989ad0843",
+    "router_id": "8db51fa5-22c7-4944-a4c5-de99e62ad58f",
+    "fixed_ip_address": "10.10.10.22",
+    "floating_ip_address": "2.2.2.94",
+    "tenant_id": "ef979882f1954a0fa4ce7daf244aa557",
+    "status": "ACTIVE",
+    "port_id": "06e18bdb-c35d-4914-9e4a-f763231484d6",
+    "id": "eb0fa229-9b42-4db3-8789-d2d94ed57fbb",
+    "rate_limit": 20480
+}
 ```
 
 #### 测试过程和结论

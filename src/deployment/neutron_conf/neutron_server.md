@@ -20,9 +20,9 @@
 创建虚拟机的 domain 都以 ustack.com 结尾，并且在创建虚拟网卡时可以指定 dns_name，如：
 `neutron port-create [net-id] --dns_name=my_vm`，使用此虚拟网卡创建的虚拟机的 hostname 为
 `my_vm.ustack.com`。
-4. `dhcp_lease_duration`。虚拟机 DHCP 的续约时间，默认是 86400 s，即一天。
+4. `dhcp_lease_duration`。虚拟机 DHCP 的续约时间，默认是 86400s，即一天。
 5. `allow_pagination=True` 和 `allow_sorting=True` 。允许通过 API 获取 Neutron 资源时可以分页或者排序。
-6. `max_fixed_ips_per_port = 20`。一个虚拟网卡上最多可以配置多少个 IP 地址。
+6. `max_fixed_ips_per_port = 20`。一个虚拟网卡上最多可以配置 20 个 IP 地址。
 7. `api_workers = 8` 。Neutron Server 启动 8 个进程完成 API 的响应。
 8. `rpc_workers=8` 。Neutron Server 启动 8 个进程完成 RPC 的响应。
 9. `max_header= 81920`。Openstack Keystone 的 PKI token 从 G 版本开始支持，PKI token 相比如传统的 UUID 的 token，
@@ -31,6 +31,7 @@
 过长引发 bug 可参考：[Token auth fails when token is larger than 8k](https://bugs.launchpad.net/keystone/+bug/1190149)
 10. `max_pool_size=30`。允许建立的最大 SQL 连接数。
 11. `max_overflow=40`。允许在 max_pool_size 上在超过 40 个 SQL 连接。
+12. `enable_fip_qos=True`。开启 FloatingIP 的 QoS。该选项默认关闭。该功能由 UnitedStack 网络组自研。
 
 #### neutron.conf
 ```
