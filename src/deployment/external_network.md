@@ -16,7 +16,7 @@
 为`外部网络`，使用如下命令创建一个外部网络：`neutron net-create external_network --router:external=True`
 通过如下命令查看所有的外部网络：`neutron net-list --router:external=True`。
 在建议的部署外部网络模型中，创建的外部网络是 VLAN 网络，创建方法和创建普通 VLAN 网络相同，
-只需添加参数 `--router:external=True` 即可。
+只需添加参数 `--router:external=True` 即可即类似于 `neutron net-create external_network --router:external=True --provider:network_type vlan --provider:physical_network physnet3 --provider:segmentation_id 1002`。
  
  对于部署多个外部网络时，需要将所有运行 L3 Agent 节点上的 l3_agent.ini 文件中的 `gateway_external_network_id` 
 和 `external_network_bridge` 两个配置都配置成空，即：
