@@ -24,6 +24,10 @@
 external_network_bridge=
 gateway_external_network_id=
 ```
+ 同时需要注意的是，在使用了多个外部网络的环境里绑定 FloatingIP 时，一定要注意路由器开启了外网网关的外部网络
+和要绑定的 FloatingIP 是在同一个外部网络中，否则 Neutron 网络不可达的异常，
+异常信息如下：`External network [network-id] is not reachable from subnet [subnet-id].
+Therefore, cannot associate Port [port-id] with a Floating IP.`
 
 #### 拓扑结构
  
