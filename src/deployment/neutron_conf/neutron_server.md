@@ -19,7 +19,7 @@
 3. `dns_domain`。定义 OpenStack 集群中虚拟机的 domain。例如，当该选项配置成 ustack.com 后，
 创建虚拟机的 domain 都以 ustack.com 结尾，并且在创建虚拟网卡时可以指定 dns_name，如：
 `neutron port-create [net-id] --dns_name=my_vm`，使用此虚拟网卡创建的虚拟机的 hostname 为
-`my_vm.ustack.com`。
+`my_vm.ustack.com`，详见本书功能节。
 4. `dhcp_lease_duration`。虚拟机 DHCP 的续约时间，默认是 86400s，即一天。
 5. `allow_pagination=True` 和 `allow_sorting=True` 。允许通过 API 获取 Neutron 资源时可以分页或者排序。
 6. `max_fixed_ips_per_port = 20`。一个虚拟网卡上最多可以配置 20 个 IP 地址。
@@ -32,6 +32,10 @@
 10. `max_pool_size=30`。允许建立的最大 SQL 连接数。
 11. `max_overflow=40`。允许在 max_pool_size 上在超过 40 个 SQL 连接。
 12. `enable_fip_qos=True`。开启 FloatingIP 的 QoS。该选项默认关闭。该功能由 UnitedStack 网络组自研。
+13. `vni_ranges`。根据需要配置，VXLAN 网络的全局数量限制。
+14. `network_vlan_ranges =physnet3:5:60`。VLAN 网络 VLAN ID 范围，用语自服务 VLAN 网络。 
+15. `tenant_network_types = vxlan,vlan`。租户网络的默认类型。
+16. `enable_ipset`。使用 ipset 安全组，有效提升安全组控制平面和数据平面性能。
 
 #### neutron.conf
 ```
@@ -373,12 +377,12 @@ l3_ha_net_cidr = 169.254.192.0/18
 # Number of separate API worker processes to spawn. If not specified or < 1,
 # the default value is equal to the number of CPUs available.
 # api_workers = <number of CPUs>
-api_workers = 4
+api_workers = 8
 
 # Number of separate RPC worker processes to spawn. If not specified or < 1,
 # a single RPC worker process is spawned by the parent process.
 # rpc_workers = 1
-rpc_workers = 4
+rpc_workers = 8
 
 # Timeout for client connections socket operations. If an
 # incoming connection is idle for this number of seconds it
@@ -403,7 +407,7 @@ rpc_workers = 4
 # backlog = 4096
 
 # Max header line to accommodate large tokens
-# max_header_line = 16384
+# max_header_line = 81920
 
 # Enable SSL on the API server
 # use_ssl = False
@@ -454,7 +458,6 @@ nova_admin_tenant_name =services
 
 # Password for connection to nova in admin context.
 # nova_admin_password =
-# nova_admin_password =cd2185ddf981f7af15d373d3
 nova_admin_password =
 
 # Authorization URL for connection to nova in admin context.
@@ -1175,8 +1178,7 @@ type_drivers = vlan,vxlan,gre,local
 # but provides no connectivity between hosts.
 #
 # tenant_network_types = local
-tenant_network_types = vxlan
-#,vlan
+tenant_network_types = vxlan,vlan
 # Example: tenant_network_types = vlan,gre,vxlan,geneve
 
 
