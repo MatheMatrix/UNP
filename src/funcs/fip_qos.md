@@ -22,10 +22,12 @@ ovs-vsctl set interface tap0 ingress_policing_burst=100
  - python-neutron-7.1.1.1-2.el7.centos.ustack.noarch
  - openstack-neutron-7.1.1.1-2.el7.centos.ustack.noarch
 
-配置选项：
+#### 开启 FloatingIP QoS
 
- - 置 `neutron.conf` 中的 `enable_fip_qos` 选项为 `True`。即：打开 FloatingIP QoS 功能。
- - 置 `l3_agent.conf` 中的 `default_router_gw_rate_limit` 选项为 5 (若无特殊需要，无需修改，该选项默认值即为 5)。即：路由器开启公网网关的共享带宽为 5Mb。
+ 修改配置文件：
+
+ - 修改 `neutron.conf` 中 section 为 [DEFAULT] 中的 `enable_fip_qos` 选项为 `True`。即：打开 FloatingIP QoS 功能。
+ - 修改 `l3_agent.conf` 中section 为 [DEFAULT] `default_router_gw_rate_limit` 选项为 5 (若无特殊需要，无需修改，该选项默认值即为 5)。即：路由器开启公网网关的共享带宽为 5Mb。
 
 升级影响：
 
