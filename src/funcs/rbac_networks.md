@@ -103,7 +103,12 @@ Created a new network:
 ```
 - 在 admin 用户下创建一个对象为 rbac-net 的 RBAC 策略
 ```
-[root@liberty ~(keystone_admin)]# neutron rbac-create --tenant-id cd1d7694e4aa4585b6ac303f089c56e0 --target-tenant 2ae1333f17094c4a83a11a02ba1aeddf --type network --action access_as_shared cd6b992a-ac14-4524-979c-9c8291246b73
+[root@liberty ~(keystone_admin)]# neutron rbac-create \
+--tenant-id cd1d7694e4aa4585b6ac303f089c56e0 \
+--target-tenant 2ae1333f17094c4a83a11a02ba1aeddf \
+--type network \
+--action access_as_shared \
+cd6b992a-ac14-4524-979c-9c8291246b73
 Created a new rbac_policy:
 +---------------+--------------------------------------+
 | Field         | Value                                |
