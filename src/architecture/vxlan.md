@@ -267,7 +267,7 @@ Conversational Learning 的形式使得 OVS 以被动的方式（Conversational 
 
 #### ARP Responder
 
-在有了ARP Responder后，由于Neutron数据库中保存了网络中的所有数据，此时可以通信的虚拟机的 IP、MAC 信息可以分发到个计算节点，计算节点上本地做 ARP 代理，直接返回 ARP 请求，详见 [ARP Responder](../arp_responder.md)。
+在有了ARP Responder后，由于Neutron数据库中保存了网络中的所有数据，此时可以通信的虚拟机的 IP、MAC 信息可以分发到个计算节点，计算节点上本地做 ARP 代理，直接返回 ARP 请求，详见 [ARP Responder](../architecture/arp_responder.md)。
 
 #### Bonding
 
