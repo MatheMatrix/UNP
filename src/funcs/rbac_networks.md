@@ -103,7 +103,12 @@ Created a new network:
 ```
 - 在 admin 用户下创建一个对象为 rbac-net 的 RBAC 策略
 ```
-[root@liberty ~(keystone_admin)]# neutron rbac-create --tenant-id cd1d7694e4aa4585b6ac303f089c56e0 --target-tenant 2ae1333f17094c4a83a11a02ba1aeddf --type network --action access_as_shared cd6b992a-ac14-4524-979c-9c8291246b73
+[root@liberty ~(keystone_admin)]# neutron rbac-create \
+--tenant-id cd1d7694e4aa4585b6ac303f089c56e0 \
+--target-tenant 2ae1333f17094c4a83a11a02ba1aeddf \
+--type network \
+--action access_as_shared \
+cd6b992a-ac14-4524-979c-9c8291246b73
 Created a new rbac_policy:
 +---------------+--------------------------------------+
 | Field         | Value                                |
@@ -186,12 +191,14 @@ Created a new port:
 ### 局限性
 - RBAC 机制当前仅适用于网络对象资源，暂不支持对于其他资源的角色控制。
 - 在指定目标租户时仅可指定一个租户，对于多个租户的共享组，需要创建多个 RBAC 策略。
+- 非管理员用户在与其他租户共享一个网络时，无法看到或删除其他租户在该网络中创建的端口 [3]。
 
 ### 潜在问题
 - 在创建 RBAC 策略，并以目标租户名字为参数进行指定时，该 RBAC 策略可被成功创建，但目标租户并不能正常使用该网络对象资源。只有将目标租户 UUID 作为参数进行指定时，基于该 RBAC 策略才真正生效。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1585082) 已提出，需进一步讨论。
-- 目标租户选项参数默认为非必要参数，且根据[社区文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html) [3] 来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
+- 目标租户选项参数默认为非必要参数，且根据[社区文档](http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html) [4] 来看默认值为“*”，即默认对数据中心中所有租户共享。但实测时发现没有参数被传入，默认值为空，并伴有报错。相关 [bug](https://bugs.launchpad.net/neutron/+bug/1578997) 已在 Launchpad 上提出，但在新的补丁被合并前，此选项仍需用户自己指定参数，且为必选项。
 
 ### 参考文档
 [1] "Networking service command-line client", 可参见 http://docs.openstack.org/cli-reference/neutron.html  
 [2] "Role-based Access Control for QoS policies", 可参见 http://specs.openstack.org/openstack/neutron-specs/specs/mitaka/rbac-qos-policies.html  
-[3] "Role-based Access Control for Networks", 可参见 http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html
+[3] "Role-Based Access Control for networks", 可参见 http://docs.openstack.org/liberty/networking-guide/adv-config-network-rbac.html  
+[4] "Role-based Access Control for Networks", 可参见 http://specs.openstack.org/openstack/neutron-specs/specs/liberty/rbac-networks.html
