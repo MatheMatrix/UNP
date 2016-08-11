@@ -47,14 +47,14 @@ systemctl start kdump.service
 active
 ```
 
-强制触发 kernel crash **(注意：此操作会导致系统触发 crash 并重启，请勿在生产环境尝试)**
+强制触发 kernel crash **( 注意：此操作会导致系统触发 crash 并重启，请勿在生产环境尝试 )**
 
 ```
 echo 1 > /proc/sys/kernel/sysrq
 echo c > /proc/sysrq-trigger
 ```
 
-系统会在 kdump 配置路径(默认 `/var/crash/` 目录)拷贝文件名如：`address-YYYY-MM-DD-HH:MM:SS/vmcore` 的文件。
+系统会在 kdump 配置路径 ( 默认 `/var/crash/` 目录 ) 拷贝文件名如：`address-YYYY-MM-DD-HH:MM:SS/vmcore` 的文件。
 
 ### 分析 Core Dump
 
