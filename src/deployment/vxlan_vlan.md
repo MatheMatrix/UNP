@@ -58,10 +58,10 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 
 ##### VLAN 规划示例
 
-||VLAN 1100|VLAN 1124|VLAN 1002|VLAN 1116|
-|:-:|:-:|:-:|:-:|:-:|
-|计算节点|管理网 + Ceph Mon|SDN|外部网络（FloatingIP）|存储|
-|网络节点|管理网 + API|SDN|外部网络（SNAT）|-|
+||VLAN 1100|VLAN 1124|VLAN 1002|VLAN 1116|备注|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+|计算节点|管理网 + Ceph Mon|SDN|外部网络（FloatingIP）|存储|非 DVR 场景（L3 HA）下无需配置外部网络 VLAN 1002|
+|网络节点|管理网 + API|SDN|外部网络（SNAT）|-|DVR 场景和 非 DVR 场景（L3 HA）配置相同|
 
 ```
 说明：
