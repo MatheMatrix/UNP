@@ -9,7 +9,7 @@ VXLAN + VLAN 自服务模型是 UnitedStack<sup>®</sup> UNP 默认推荐的部�
 OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构，目前主要是OpenvSwitch
  Drvier 实现的纯软件方案。本方案特点是完全开源、成本低、供应商选择丰富等。
 
-### 设备角色及推荐配置
+#### 设备角色及推荐配置
 
 |设备类型|用途|推荐配置|数量|备注|
 |:-:|:-:|:-:|:-:|:-:|
@@ -23,9 +23,9 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 
 系统 BIOS 的配置参考本书系统一节。
 
-### 网络适配器相关信息
+#### 网络适配器相关信息
 
-#### 推荐的网络适配器型号
+##### 推荐的网络适配器型号
 
 |类别|品牌|型号|产品链接|备注|
 |:-:|:-:|:-:|:-:|:-:|
@@ -35,7 +35,7 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 
 注：由于 X550 使用 RJ45 接口，因此需要注意交换机需与之配套。
 
-#### 网卡名称与使用参考
+##### 网卡名称与使用参考
 
 |设备角色|千兆网络适配器|万兆网络适配器|Bonding|
 |:-:|:-:|:-:|:-:|
@@ -44,7 +44,7 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 |网络节点|eth0|eth2|eth0 + eth1 => Bond0|
 |网络节点|eth1|eth3|eth2 + eth3 => Bond1|
 
-#### 网络适配器兼容列表
+##### 网络适配器兼容列表
 
 |类别|品牌|型号|是否兼容|
 |:-:|:-:|:-:|:-:|
@@ -56,7 +56,7 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 |千兆网络适配器|Intel|Intel Corporation I350 Gigabit Network Connection|兼容|
 |千兆网络适配器|Broadcom|Broadcom Corporation NetXtreme BCM5720 Gigabit Ethernet PCIe|兼容|
 
-#### VLAN 规划示例
+##### VLAN 规划示例
 
 ||VLAN 1100|VLAN 1124|VLAN 1002|VLAN 1116|
 |:-:|:-:|:-:|:-:|:-:|
@@ -71,7 +71,7 @@ OpenvSwitch、Linux 等基于标准硬件或开放标准的硬件实现的架构
 VLAN 为 1002 的外部网络。
 ```
 
-#### 验证各个 VLAN 配置的正确性
+##### 验证各个 VLAN 配置的正确性
 
 对于 VLAN 1100 1124 1002 1116 可以分为两类，一类是在网络适配器接入交换机上做 Access VLAN，比如 VLAN 1100；
 另一类是通过计算节点 / 网络节点上通过 OpenFlow 流表的形式将流量打上相应 VLAN tag，比如 VLAN 1124 1002 1116。
@@ -119,7 +119,7 @@ Ping 正常则表示 VLAN 1002 配置正确。
 ip link delete eth1.1002
 ```
 
-#### 配置 Neutron 相关参数
+##### 配置 Neutron 相关参数
 
 本节中，讲解 VXLAN + VLAN 自服务模型下 Neutron 的详细配置。
 `注：本节中使用到的 VLAN 范围是 10 ~ 20`
