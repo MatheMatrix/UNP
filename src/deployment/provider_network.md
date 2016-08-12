@@ -6,7 +6,7 @@
 
 在 OpenStack 的网络模型中，有两种网络类型：Tenant Network 和 Provider Network。
 
-上述这两种网络类型分别对应 UnitedStack<sup>®</sup> United Networking Platform(UNP) 中的自服务网络和与配置网络，可参考 [VXLAN + VLAN 一节](./vxlan_vlan.md)。
+上述这两种网络类型分别对应 United Networking Platform(UNP) 中的自服务网络和与预配置网络，可参考 [VXLAN + VLAN 一节](./vxlan_vlan.md)。
 
  - Tenant Network 
 
