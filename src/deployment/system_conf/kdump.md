@@ -292,6 +292,6 @@ core_collector makedumpfile -l --message-level 1 -d 31
 
 ## 参考文档
 
-* Installing and Configuring Kdump,  https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Crash_Dump_Guide/chap-installing-configuring-kdump.html
+[Installing and Configuring Kdump](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Kernel_Crash_Dump_Guide/chap-installing-configuring-kdump.html)
 
-* 深入探索 Kdump，第 1 部分：带你走进 Kdump 的世界， https://www.ibm.com/developerworks/cn/linux/l-cn-kdump1/
+[深入探索 Kdump，第 1 部分：带你走进 Kdump 的世界](https://www.ibm.com/developerworks/cn/linux/l-cn-kdump1/)
