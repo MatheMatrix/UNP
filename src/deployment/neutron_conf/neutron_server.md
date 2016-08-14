@@ -51,7 +51,6 @@ verbose = True
 # value is "False" to support legacy mode (centralized) routers.
 #
 # router_distributed = False
-router_distributed = True
 #
 # ===========End Global Config Option for Distributed L3 Router===============
 
@@ -317,7 +316,7 @@ dhcp_agents_per_network = 2
 # =========== items for l3 extension ==============
 # Enable high availability for virtual routers.
 # l3_ha = False
-l3_ha = False
+l3_ha = True
 #
 # Maximum number of l3 agents which a HA router will be scheduled on. If it
 # is set to 0 the router will be scheduled on every agent.

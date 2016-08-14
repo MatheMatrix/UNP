@@ -24,10 +24,9 @@ UnitedStack<sup>®</sup> UNP 的架构可以从四方面阐述：
  SRIOV 比较特别，和其他架构有较大出入，目前生产经验较少，所以在 UnitedStack<sup>®</sup> UNP 1.0 版本可能无法使用，计划在后面的版本中支持。
  
 关于架构方面，UnitedStack<sup>®</sup> UNP 默认推荐的设置是：
- - 默认打开 DVR，增强扩展性和性能；
+ - 默认打开 L3 HA，允许创建高可用路由器，增强虚拟路由器稳定性并且解决 DVR 下部分 VIP 类应用受影响的问题；
  - 默认使用 Pacemaker 解决 Liberty 版本 DVR 的 SNAT 路由器高可用问题；
- - 同时允许创建高可用路由器，解决 DVR 下部分 VIP 类应用受影响的问题；
- - 默认打开 L2 Population + ARP Responder，配合 DVR 使用和提升网络有效连接数；
+ - 默认打开 L2 Population + ARP Responder，配合 L3 HA 使用；
  - 默认使用 VXLAN 租户网络，提升网络扩展性、解决 Vlan 网络 4096 限制，避免影响现网；
  - 允许用户创建池化的 Vlan 租户网络，便于提供高性能的或用于企业内网互通；
  - 在界面上默认不允许指定 Vlan ID，只有少数网管场景专门允许指定 Vlan ID。
