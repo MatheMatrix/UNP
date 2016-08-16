@@ -28,7 +28,6 @@
        * [Rootwrap 配置](src/deployment/neutron_conf/root.md)
    * [系统配置](src/deployment/system_conf/preface.md)
        * [Kdump 配置](src/deployment/system_conf/kdump.md)
-   * [UnitedStack 远程支持接入](src/deployment/remote_support.md)
    * [接入层高可用](src/deployment/access_ha.md)
    * [多个外部网络的使用](src/deployment/external_network.md)
    * [Package Manifest](src/deployment/package_manifest.md)

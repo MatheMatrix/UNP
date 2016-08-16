@@ -1,4 +1,4 @@
-### Package Manifest
+3## Package Manifest
 
 ------
 
@@ -10,16 +10,16 @@
 
 | 包名                          | 版本       			     | 注释               |
 |:----------------------------- |:-----------------------------------|:-------------------|
-| openstack-neutron-vpnaas      | 7.0.0-1.el7.noarch                 | 初始版本 (UNP 1.0) |
-| openstack-neutron-lbaas       | 7.0.0-1.el7.noarch                 | 初始版本 (UNP 1.0) |
-| python-neutronclient          | 3.1.0-1.el7.noarch                 | 初始版本 (UNP 1.0) |
-| openstack-neutron             | 7.1.1.2-1.el7.centos.ustack.noarch | 初始版本 (UNP 1.0) |
-| openstack-neutron-common      | 7.1.1.2-1.el7.centos.ustack.noarch | 初始版本 (UNP 1.0) |
-| openstack-neutron-ml2         | 7.1.1.2-1.el7.centos.ustack.noarch | 初始版本 (UNP 1.0) |
-| python-neutron-vpnaas         | 7.0.0-1.el7.noarch                 | 初始版本 (UNP 1.0) |
-| python-neutron-lbaas          | 7.0.0-1.el7.noarch                 | 初始版本 (UNP 1.0) |
-| python-neutron                | 7.1.1.2-1.el7.centos.ustack.noarch | 初始版本 (UNP 1.0) |
-| openstack-neutron-openvswitch | 7.1.1.2-1.el7.centos.ustack.noarch | 初始版本 (UNP 1.0) |
+| openstack-neutron-vpnaas      | 7.0.0-1.el7.noarch                 | UNP 1.1 |
+| openstack-neutron-lbaas       | 7.0.0-1.el7.noarch                 | UNP 1.1 |
+| python-neutronclient          | 3.1.0-1.el7.noarch                 | UNP 1.1 |
+| openstack-neutron             | 7.1.1.3-1.el7.centos.ustack.noarch | UNP 1.1 |
+| openstack-neutron-common      | 7.1.1.3-1.el7.centos.ustack.noarch | UNP 1.1 |
+| openstack-neutron-ml2         | 7.1.1.3-1.el7.centos.ustack.noarch | UNP 1.1 |
+| python-neutron-vpnaas         | 7.0.0-1.el7.noarch                 | UNP 1.1 |
+| python-neutron-lbaas          | 7.0.0-1.el7.noarch                 | UNP 1.1 |
+| python-neutron                | 7.1.1.3-1.el7.centos.ustack.noarch | UNP 1.1 |
+| openstack-neutron-openvswitch | 7.1.1.3-1.el7.centos.ustack.noarch | UNP 1.1 |
 
 #### 每个 Neutron 软件包的依赖包及版本信息
 
@@ -61,7 +61,7 @@
 
 | 包名                          | 版本       		|
 |:----------------------------- |:----------------------|
-|config(openstack-neutron)      |7.1.1.2-1.el7.centos.ustack|
+|config(openstack-neutron)      |7.1.1.3-1.el7.centos.ustack|
 |conntrack-tools                |1.4.2-9.el7.x86_64     |
 |dibbler-client                 |1.0.1-0.RC1.2.el7.x86_64   |
 |dnsmasq                        |2.66-12.el7.x86_64     |
@@ -69,22 +69,22 @@
 |ipset                          |6.19-4.el7.x86_64      |
 |iptables                       |1.4.21-13.el7.x86_64   |
 |keepalived                     |1.2.13-7.el7.x86_64    |
-|openstack-neutron-common       |7.1.1.2-1.el7.centos.ustack|
+|openstack-neutron-common       |7.1.1.3-1.el7.centos.ustack|
 |radvd                          |1.9.2-9.el7.x86_64     |
 
 ##### openstack-neutron-common
 
 | 包名                          | 版本       		|
 |:----------------------------- |:----------------------|
-|config(openstack-neutron)      |7.1.1.2-1.el7.centos.ustack|
-|python-neutron                 |7.1.1.2-1.el7.centos.ustack|
+|config(openstack-neutron)      |7.1.1.3-1.el7.centos.ustack|
+|python-neutron                 |7.1.1.3-1.el7.centos.ustack|
 
 ##### openstack-neutron-ml2
 
 | 包名                          | 版本       		|
 |:----------------------------- |:----------------------|
-|config(openstack-neutron-ml2)  |7.1.1.2-1.el7.centos.ustack|
-|openstack-neutron-common       |7.1.1.2-1.el7.centos.ustack|
+|config(openstack-neutron-ml2)  |7.1.1.3-1.el7.centos.ustack|
+|openstack-neutron-common       |7.1.1.3-1.el7.centos.ustack|
 |python-ncclient                |0.4.2-2.el7.noarch     | 
 
 ##### python-neutron-vpnaas
@@ -95,7 +95,7 @@
 |python-alembic                 |0.8.3-3.el7.noarch     |
 |python-jinja2                  |2.7.2-2.el7.noarch     |
 |python-netaddr                 |0.7.18-1.el7.noarch    |
-|python-neutron                 |7.1.1.2-1.el7.centos.ustack.noarch|
+|python-neutron                 |7.1.1.3-1.el7.centos.ustack.noarch|
 |python-oslo-config             |2.4.0-1.el7.noarch     |
 |python-oslo-db                 |2.6.0-3.el7.noarch     |
 |python-oslo-log                |1.10.0-1.el7.noarch    |
@@ -179,7 +179,7 @@
 
 | 包名                          | 版本       		|
 |:----------------------------- |:----------------------|
-|config(openstack-neutron-openvswitch) |7.1.1.2-1.el7.centos.ustack|
-|openstack-neutron-common 	|7.1.1.2-1.el7.centos.ustack|
+|config(openstack-neutron-openvswitch) |7.1.1.3-1.el7.centos.ustack|
+|openstack-neutron-common 	|7.1.1.3-1.el7.centos.ustack|
 |openvswitch			|2.4.0-1.el7.x86_64	|
 |python-openvswitch		|2.4.0-1.el7.noarch	|
