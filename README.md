@@ -6,7 +6,7 @@
 
 ### UnitedStack<sup>®</sup> United Networking Platform 简介
 
-UnitedStack<sup>®</sup> United Networking Platform（以下简称 UnitedStack<sup>®</sup> UNP）是一个以 UnitedStack OpenStack 为中心，为用户和合作伙伴提供完整的网络功能与架构参考，能够为企业和服务提供商带来专业、清晰的指导方案。UnitedStack® UNP 是通过一系列开源软件栈、商业解决方案集成、专业文档、配置说明、架构参考、用户案例定义的。
+UnitedStack<sup>®</sup> United Networking Platform（以下简称 UnitedStack<sup>®</sup> UNP）是一个以 UnitedStack OpenStack 为中心，为用户和合作伙伴提供完整的网络功能与架构参考，能够为企业和服务提供商带来专业、清晰指导方案的网络开放设计。UnitedStack® UNP 是通过一系列开源软件栈、商业解决方案集成、专业文档、配置说明、架构参考、用户案例定义的。
 
 UnitedStack® UNP Perlis 的基础组成包含以下方面：
  - 云系统: UnitedStack® OpenStack
