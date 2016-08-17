@@ -49,6 +49,7 @@
    * [LLDP](src/system/lldp.md)
    * [优化](src/system/optimization.md)
    * [vhost-net](src/system/vhost-net.md)
+   * [Linux Pakcet Generator](src/system/pktgen.md)
 * [用户典型使用场景](src/scenario/preface.md)
    * [虚拟机多 FloatingIP 使用](src/scenario/multi_floatingips.md)
 * [生态系统](src/ecosystem/preface.md)
