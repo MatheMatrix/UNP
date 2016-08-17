@@ -101,3 +101,8 @@ PGDEV=/proc/net/pktgen/pgctrl
 11时43分19秒 tap33d6c75c-b8 1270854.00      1.00       1762317.07      0.58      0.00      0.00      0.00
 11时43分20秒 tap33d6c75c-b8 1513016.00      1.00       2098127.66      0.58      0.00      0.00      0.00
 ```
+
+##### References
+
+1. [HOWTO for the linux packet generator](https://www.kernel.org/doc/Documentation/networking/pktgen.txt)
+2. [pktgen](https://wiki.linuxfoundation.org/networking/pktgen)
