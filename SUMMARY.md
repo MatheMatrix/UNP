@@ -49,6 +49,7 @@
    * [LLDP](src/system/lldp.md)
    * [优化](src/system/optimization.md)
    * [vhost-net](src/system/vhost-net.md)
+   * [Neutron 性能优化](src/system/performance.md)
 * [用户典型使用场景](src/scenario/preface.md)
    * [虚拟机多 FloatingIP 使用](src/scenario/multi_floatingips.md)
 * [生态系统](src/ecosystem/preface.md)
