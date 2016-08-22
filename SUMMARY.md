@@ -31,6 +31,7 @@
    * [接入层高可用](src/deployment/access_ha.md)
    * [多个外部网络的使用](src/deployment/external_network.md)
    * [Package Manifest](src/deployment/package_manifest.md)
+   * [部署 Provider Network](src/deployment/provider_network.md)
 * [性能](src/performance/preface.md)
    * [DVR场景下虚拟机的性能](src/performance/dvr.md)
    * [HA场景下虚拟机的性能](src/performance/ha.md)
