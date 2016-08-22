@@ -71,6 +71,11 @@ Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection
 +----------------------------+----------+
 ```
 
+开启虚拟机的虚拟网卡多队列，包括 qvb、qvo、qbr、tap 设备（对于虚拟机的跨子网通信，要开启虚拟
+路由器中的 qr、qg 设备的多队列），修改方法举例如下：
+
+`echo "ffff,ffffffff,ffffffff,ffffffff,ffffffff"> /sys/class/net/qg-0631b6eb-03/queues/rx-0/rps_cpus`
+
 #### 调优过程
 
 ##### 关闭物理网卡智能限速
