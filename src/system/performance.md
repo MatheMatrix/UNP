@@ -131,9 +131,9 @@ rqbalance 用于优化中断分配，它会自动收集系统数据以分析使�
 
 命令：
 
-`echo '10000000' > /proc/sys/net/netfilter/nf_conntrack_max`
+`echo '16777216' > /proc/sys/net/netfilter/nf_conntrack_max`
 
-`echo '4000000' > /sys/module/nf_conntrack/parameters/hashsize`
+`echo '4194304' > /sys/module/nf_conntrack/parameters/hashsize`
 
 
 References:
