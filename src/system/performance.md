@@ -163,6 +163,45 @@ References：
 `echo 1000000 > /sys/devices/virtual/net/qvo33d6c75c-b8/tx_queue_len`
 
 
+##### 开启虚拟机网卡多队列
+
+在 Liberty 版本的 OpenStack Nova 中，支持了[虚拟机网卡多队列功能](https://specs.openstack.org/openstack/nova-specs/specs/liberty/implemented/libvirt-virtiomq.html)。
+此功能需要在虚拟机镜像文件时开启 `hw_vif_multiqueue_enabled=true` 属性，如：
+```
+glance image-update [image-uuid] --property  hw_vif_multiqueue_enabled=true
+```
+或者在上传镜像时，指定该参数，如：
+```
+glance image-create {...} --property hw_vif_multiqueue_enabled=true
+```
+
+在 Nova 中创建特定的 Flavor ，并开启多队列，如：
+```
+nova flavor-create m1.vm_mq_big auto 512 3 4
+nova flavor-key m1.vm_mq_big set hw:vif_number_queues=4
+```
+
+以此 Flavor 和 Image 创建的虚拟机开启了虚拟网卡多队列，在虚拟机中执行如下命令验证：
+```
+[root@server-41.100.ct.ustack.in ~ ]$ ethtool -l eth0
+Channel parameters for eth0:
+Pre-set maximums:
+RX:             0
+TX:             0
+Other:          0
+Combined:       4
+Current hardware settings:
+RX:             0
+TX:             0
+Other:          0
+Combined:       1
+```
+
+使用如下命令修改虚拟机队列数：
+```
+ethtool -L eth0 combined 4
+```
+
 #### 测试结果
 
 测试结果如下，关于测试结果需要说明的是：
