@@ -66,3 +66,4 @@
    * [F5 BIG-IP 对接](src/ecosystem/F5_BIG-IP.md)
    * [HillStone 云界对接](src/ecosystem/HillStoneSG6000.md)
    * [Cisco ICF 对接](src/ecosystem/Cisco_ICF.md)
+   * [NetScaler 和 OpenStack 集成](src/ecosystem/NetScaler.md)
