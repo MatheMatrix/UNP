@@ -29,6 +29,7 @@ crashkernel=128M
 ```
 path /var/crash
 core_collector makedumpfile -l --message-level 1 -d 31
+default reboot
 ```
 
 开启服务
@@ -37,6 +38,8 @@ core_collector makedumpfile -l --message-level 1 -d 31
 systemctl enable kdump.service
 systemctl start kdump.service
 ```
+
+**注意：重启系统后 kdump 生效**
 
 ### 测试 kdump
 
