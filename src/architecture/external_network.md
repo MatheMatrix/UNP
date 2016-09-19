@@ -55,6 +55,28 @@ Created a new network:
  # network type values configured in type_drivers config option.
  external_network_type = vlan
  ```
+ 并且还需修改 L3(VPN) Agent 的配置文件 `l3_agent.ini` ，将
+`gateway_external_network_id` 和 `external_network_bridge` 都需要配置成空。如下：
+
+```
+...
+# When external_network_bridge is set, each L3 agent can be associated
+# with no more than one external network. This value should be set to the UUID
+# of that external network. To allow L3 agent support multiple external
+# networks, both the external_network_bridge and gateway_external_network_id
+# must be left empty.
+gateway_external_network_id =
+...
+# Name of bridge used for external network traffic. This should be set to
+# empty value for the linux bridge. when this parameter is set, each L3 agent
+# can be associated with no more than one external network.
+# This option is deprecated and will be removed in the M release.
+# external_network_bridge = br-ex
+external_network_bridge =
+...
+
+```
+
  创建 VLAN 类型的 External Network 和 Neutron 创建 VLAN 网络类似，只需指定某些特定的参数即可，比如：
 
 ```
